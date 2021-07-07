@@ -1,0 +1,210 @@
+---
+title: 'Class 1: Including covariates: ARIMAX models'
+author: Andrew Parnell \newline \texttt{andrew.parnell@ucd.ie} \newline \vspace{1cm}
+  \newline \includegraphics[width=1cm]{../UCDlogo.pdf}
+output:
+  beamer_presentation:
+    includes:
+      in_header: ../header.tex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dev = 'pdf')
+par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
+#setwd("~/GitHub/ecots/slides/day_3")
+options(width = 50)
+pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast', 'rstan')
+lapply(pkgs, library, character.only = TRUE)
+```
+
+## Learning outcomes
+
+- Be able to add on components to ARIMA models
+- Understand the issues with fitting ARIMAX and other extensions to ARIMA models
+- Understand how to create forecasts and accuracy measures with `forecast`
+- More on model choice
+- Know the basics of forecast calibration and scoring rules
+
+## Bolting together models
+
+- As we have already seen we can combine bits of models together, such as RW, AR and MA, into ARIMA
+- The `forecast` package in R can fit these models really fast
+- Unfortunately we need to be able to fit these models by hand (e.g. in JAGS or Stan) to create really interesting and complicated models
+- The one extra really useful part of `forecast` is the ability to be able to add in covariates
+
+## The ARIMAX framework
+
+- The ARIMAX framework (ARIMA with eXplanatory variables) is just another extension to the ARIMA framework
+- The basic ARIMAX model for a possible differenced series $z_t$ is:
+$$z_t \sim N(\alpha + \mbox{AR terms} + \mbox{MA terms} + \phi_1 x_{1t} + \ldots + \phi_r x_{rt}, \sigma^2)$$
+where we now include $r$ possible explanatory variables with coefficients $\phi_1, \ldots,\phi_r$
+
+## Warnings about ARIMAX models
+
+There are two key things to be wary of when using this type of ARIMAX model:
+
+1. It's hard to interpret the $\phi$ values. It is not the case (as in normal regression) that an increase of 1 unit in $x$ will lead to an increase of $\phi$ in $y$ because of all the AR terms
+2. If you are differencing the data before running the model, you also need to difference the explanatory variables
+
+If you're just interested in forecasting then the problem in 1 goes away, but if you are interested in the causation of $x$ on $y$ you can fit the regression model separately or try a dynamic regression model (see later in course)
+
+## An ARIMAX model for the wheat data
+
+```{r, fig.height = 6}
+wheat = read.csv('../../data/wheat.csv')
+plot(wheat$year, wheat$wheat, type = 'l')
+```
+- Let's see if we can fit a time series model with year as the explanatory variable
+
+## ACF/PACF plots
+
+```{r, fig.height = 6}
+par(mfrow = c(1, 2))
+acf(wheat$wheat)
+pacf(wheat$wheat)
+```
+
+## A first ARIMAX model
+
+\small
+
+- Try ARIMAX(1, 1, 1)
+```{r}
+Arima(wheat$wheat, order = c(1, 1, 1), xreg = wheat$year)
+## Compare with:
+Arima(wheat$wheat, order = c(1, 1, 1))$aic
+```
+
+## Checking the residuals
+
+```{r, fig.height =5}
+my_model_ARIMAX111 = Arima(wheat$wheat, 
+                           order = c(1, 1, 1),
+                           xreg = wheat$year)
+qqnorm(my_model_ARIMAX111$residuals)
+qqline(my_model_ARIMAX111$residuals)
+```
+
+## Predictions
+
+```{r}
+plot(forecast(my_model_ARIMAX111, xreg = 2014:2033, h=20))
+```
+
+## A cheat way of skipping model choice
+
+\small
+
+- The `forecast` package has a cheat function which will fit _all_ of the possible ARIMA models for you and report the best one. It's called `auto.arima`
+```{r}
+auto.arima(wheat$wheat, xreg = wheat$year)
+```
+
+# Model choice
+
+## Choosing different models: AICc and BIC
+
+- So far we have just been using AIC to choose between models
+- AIC is defined for an ARIMA model as:
+$$AIC = -2 \log L + 2 (p + q + 1)$$
+- The forecast package also reports the Bayesian Information Criterion (BIC) which is:
+$$BIC = -2 \log L + (p + q + 1) \log n$$
+where $n$ is the number of data points (after differencing)
+- It also reports the 'corrected' AIC (AICc) value which is a very slight variation on the standard AIC for use with smaller sample sizes
+
+## Measuring model complexity
+
+- These information criteria all work by adding on a function of the number of parameters to the deviance, designed to approximate some performance criterion
+
+- AIC was invented to match leave-one-out cross validation error (more on this later). BIC to match the probability of the model given the data
+
+- The version JAGS uses is known as the Deviance Information Criterion (DIC) and is built specifically to penalise the deviance by the _effective_ number of parameters, which it calls $p_D$
+
+- The version Stan uses is known as the Wanatabe Akaike Information Criterion (WAIC) and use a different method to estimate an effective number of parameters
+
+## An alternative; cross-validation
+
+- Often the gold standard by which time series models are judged as how well they forecast future values of the series
+
+- Without waiting for more data to become available, we can remove some of the data points at the end of the series, fit the model, and forecast into the future. This is _leave one out cross validation_ or LOO-CV
+
+- LOO_CV is very computationally intensive as we have to re-fit the model and get new parameter estimates at every step
+
+## Leave none out cross validation
+
+- We can get a cheat version of LOO-CV by just using the fitted values from the ARIMA model fit 
+
+- The `Arima` function stores the one step ahead forecasts in the object `fitted`:
+
+```{r, fig.height = 5}
+plot(wheat$wheat, type = 'l')
+lines(fitted(my_model_ARIMAX111), col = 'red')
+```
+
+## Accuracy measures from `forecast`
+
+- For the fitted values you can also use measures of accuracy such as root mean square error
+
+- These are all calculated by comparing the fitted values with the forecasted values
+
+- It actually provides way more:
+```{r}
+accuracy(my_model_ARIMAX111)
+```
+
+## Proper LOO-CV
+
+- The `forecast` package has a function called `CVar` which implements leave one out cross validation. However it only works for AR models - not full ARIMA ones
+
+- If you want to do ARIMA LOO-CV (sometimes called rolling-origin forecasting) you have to write it yourself
+
+\begin{center}
+\includegraphics[width = 7cm]{cv_pic.png}
+\end{center}
+
+\small
+
+(from https://robjhyndman.com/hyndsight/tscv/)
+
+## Implementing loo-CV for an ARIMA model
+
+```{r}
+n_min = 30 # minimum length for model
+n = nrow(wheat)
+ae = forecasts = rep(NA, n - n_min)
+# Loop through time series
+for(i in 1:(n-n_min)) {
+  # Fit to the training set
+  curr_model = Arima(wheat$wheat[1:(i + n_min - 1)], 
+                     c(1, 1, 1))
+  # Create 1 step ahead forecasts
+  forecasts[i] = forecast(curr_model, h = 1)[['mean']]
+  # Get mean absolute error
+  ae[i] = abs(forecasts[i] - wheat$wheat[i + n_min])
+}
+mean(ae)
+```
+
+## Plotting the forecasts
+
+```{r}
+plot(wheat$wheat, type = 'l')
+lines(31:n, forecasts, col = 'red')
+```
+
+## Forecasting and scoring rules
+
+- A common mantra in time series forecasting is to aim for _sharpness under calibration_
+
+- Sharpness refers to the variance of the forecast. A _sharp_ forecast is one with a low variance
+
+- However, for a forecast to be useful, it needs to be _calibrated_. This means that if you predict a 20% chance of rain, it should rain on 20% of those days. A sharp forecast is only useful if it is calibrated
+
+- Often forecasters use _scoring rules_ to evaluate whether a forecast is calibrated or not. This is a very broad issue and beyond the remit of this course
+
+## Summary
+
+- We now know how to incorporate explanatory variables in ARIMA models (and we also know the pitfalls of doing so)
+- We know how to compare models using AIC, AICc, BIC and cross validation
+- We learnt how to create forecast accuracy
+- We've learnt a little bit about forecast calibration

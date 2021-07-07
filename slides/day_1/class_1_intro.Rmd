@@ -1,0 +1,177 @@
+---
+title: 'Class 1: Time Series Models for Ecologists'
+author: Andrew Parnell with Emma Howard and John O'Sullivan\newline \texttt{andrew.parnell@ucd.ie} \newline \vspace{1cm}
+  \newline \includegraphics[width=1cm]{../UCDlogo.pdf}
+output:
+  beamer_presentation:
+    includes:
+      in_header: ../header.tex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dev = 'pdf')
+par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
+#setwd("~/GitHub/ecots/slides/day_1")
+pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast', 'rstan')
+lapply(pkgs, library, character.only = TRUE)
+```
+
+## Introductions
+
+- Tell us who you are, what you are working on, and what you hope to get out of the week
+- Timetable for the week
+- A quick note about pre-requisites
+
+## How this course works
+
+- This course lives on GitHub, at [github.com/andrewcparnell/ecots](www.github.com/andrewcparnell/ecots) which means anyone can see the slides, code, etc, and make comments on it
+- The timetable html document provides links to all the pdf slides, handouts, data and practicals
+- Let me know if you spot mistakes, as these can be easily updated on the GitHub page
+- There is an issues page if you want to ask questions
+
+## R code, slides, and practicals
+
+- All the slides and practicals are available in pdf format for you to annotate
+- In the background, the slides and the practicals are written in `Rmarkdown` format, which means you can load them up in Rstudio and see how everything was created
+- When you have spare time, feel free to load up the `.Rmd` files and run the code in the background
+
+## R code in slides
+
+- Many of the slides contain R code and output (some of which may be hidden in the `.Rmd` file)
+- An example:
+```{r, fig.height = 5}
+lynx = read.csv(file = '../../data/lynx.csv')
+with(lynx, plot(year, number, type = 'l'))
+```
+
+## Course format and other details
+
+- Lectures will take place in the morning, practical classes in the afternoon
+- Please ask lots of questions
+- Some good books:
+
+    - _Forecasting: Principles and Practice_ by Hyndman and Athanasopoulos
+    - _Hierarchical Modeling and Inference in Ecology_ by Royle and Dorazio
+    - _Bayesian Methods for Ecology_. by McCarthy
+    - _Bayesian Data Analysis_ by Gelman et al
+
+- Looking for data? Try: https://datamarket.com/data/list/?q=provider:tsdl 
+- (see also sources in Practical 3)
+
+## What is a time series?
+
+- A time series is any set of data where the response variable is measured over time
+- There may be other variables included too (covariates)
+- Time may be discrete (1, 2, 3, 4, ...) or continuous (1.7, 2.53, 7.12, ...)
+- There may be missing values or outliers
+- Occasionally there may be more than one response variable (multivariate time series)
+
+## A time series plot: CO2 data
+
+```{r, echo = FALSE}
+CO2 = read.csv(file = '../../data/CO2.csv', na.strings = -99.99)
+CO2$date = as.Date(paste(CO2$year, CO2$month ,'01', sep = '-'))
+with(CO2, plot(date, CO2_ppm, type = 'l', ylab = 'CO2 (parts per million)', xlab = 'Year'), las = 1)
+```
+
+## General features of a time series
+
+- Trend: long term behaviour. May be a straight line or something more complicated
+- Seasonal: repeated behaviour. May be yearly, monthly, daily, etc. Likely to be dependent on the time resolution
+- Error: Leftover uncertainty beyond the trend and seasonal behaviour. May have interesting statistical patterns.
+
+## Writing time series mathematically
+
+- If we write $y_t$ as the value of the response variable at time $t$ then the series can be _decomposed_ as:
+$$y_t = \mbox{trend}_t + \mbox{seasonality}_t + \mbox{error}_t$$
+
+- Most time series models concentrate on the error structure
+- Time Series analysis is usually harder if you need to identify the seasonality too
+
+## Participation exercise
+
+- I want to you to look at the time series on the following slides and...
+- ... identify the trend. Is it linear or non-linear?
+- ... identify the seasonality (if any). Can you estimate the frequency?
+- ... look at the residual errors after accounting (in your head) for trend and seasonality. Can you spot any patterns or strange observations?
+
+## Data set 1: Wheat production in Canada
+
+```{r, echo = FALSE}
+wheat = read.csv('../../data/wheat.csv')
+with(wheat, plot(year, wheat, type = 'l',
+                 ylab = 'Wheat production (tonnes)',
+                 xlab = 'Year'))
+```
+
+## Data set 2: Sheep numbers in Asia
+
+```{r, echo = FALSE}
+sheep = read.csv('../../data/sheep.csv')
+with(sheep, plot(year, sheep, type = 'l',
+                 ylab = 'Sheep numbers',
+                 xlab = 'Year'))
+```
+
+## Data set 3: Lynx trappings in Canada
+
+```{r, echo = FALSE}
+lynx = read.csv('../../data/lynx.csv')
+with(lynx, plot(year, number, type = 'l',
+                ylab = 'Number of Lynx trapped',
+                xlab = 'Year'))
+```
+
+## Data set 4: Forest fires in Canada
+
+```{r, echo = FALSE}
+ff = read.csv('../../data/forest_fires.csv')
+with(ff, plot(year, acres, type = 'l',
+                ylab = 'Number of acres',
+                xlab = 'Year'))
+```
+
+## Data set 5: Geese isotopes 
+
+```{r, echo = FALSE}
+geese = read.csv('../../data/geese_isotopes.csv')
+geese$date = as.Date(paste(geese$year, geese$month ,geese$day, sep = '-'))
+with(geese, plot(date, d13CPl, 
+                 ylab = 'd13C',
+                 xlab = 'Year'))
+```
+
+## Data set 5: Geese isotopes again 
+
+```{r, echo = FALSE}
+o = order(geese$julianday)
+with(geese, plot(julianday[o], d13CPl[o],
+                                  ylab = 'd13C',
+                 xlab = 'Day of year'))
+```
+
+## Data set 6: Oxygen isotopes in ice
+
+```{r, echo = FALSE, fig.height = 5}
+ice = read.csv('../../data/GISP2_20yr.csv')
+with(ice, plot(Age, Del.18O, type = 'l', ylab = 'd18O'))
+```
+```{r}
+table(diff(ice$Age))
+```
+
+## Goals of time series analysis
+
+- Predict future values of the response variable
+- Interpolate or smooth the response variable for missing or non-measured times
+- Explain which factors are causing the time series to change
+- Understand the underlying behaviour of the time series
+
+## Summary 
+
+This course takes a practical approach, and should help you:
+
+- Understand modern time series modelling techniques
+- Get and use tools for thinking about and dealing with uncertainty
+- Fit time series models, and make predictions
+- Understand your time series data, and the process that generates it

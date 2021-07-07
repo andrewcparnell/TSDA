@@ -1,0 +1,342 @@
+---
+title: 'Class 2: Creating bespoke time series models using Bayes'
+author: Andrew Parnell \newline \texttt{andrew.parnell@ucd.ie} \newline \vspace{1cm}
+  \newline \includegraphics[width=1cm]{../UCDlogo.pdf}
+output:
+  beamer_presentation:
+    includes:
+      in_header: ../header.tex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dev = 'pdf')
+par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
+setwd("~/GitHub/ecots/slides/day_3")
+options(width = 50)
+pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast', 'rstan')
+lapply(pkgs, library, character.only = TRUE)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+```
+
+## Learning outcomes
+
+- Know the difference between Frequentist and Bayesian statistics
+- Be able to follow the syntax of JAGS and Stan
+- Know how to fit some basic AR and regression models in JAGS and Stan
+- Be able to manipulate the output of these models
+
+## Who was Bayes?
+
+*An essay towards solving a problem on the doctrine of chances* (1763)
+
+$$P(A|B) = \frac{P(B|A) P(A)}{P(B)}$$
+
+\begin{center}
+\includegraphics[width = 5cm]{Thomas_Bayes.pdf}
+\end{center}
+
+## Bayes theorem in english
+
+Bayes' theorem can be written in words as:
+
+$$\mbox{posterior is proportional to likelihood times prior}$$
+... or ...
+$$\mbox{posterior} \propto \mbox{likelihood} \times \mbox{prior}$$
+  
+Each of the three terms _posterior_, _likelihood_, and _prior_ are _probability distributions_ (pdfs).
+
+In a Bayesian model, every item of interest is either data (which we will write as $x$) or parameters (which we will write as $\theta$). Often the parameters are divided up into those of interest, and other _nuisance parameters_
+
+## Bayes theorem in maths
+
+Bayes' equation is usually written mathematically as:
+$$p(\theta|x) \propto p(x|\theta) \times p(\theta)$$
+or, more fully:
+$$p(\theta|x) = \frac{p(x|\theta) \times p(\theta)}{p(x)}$$
+
+- The _posterior_ is the probability of the parameters given the data
+- The _likelihood_ is the probability of observing the data given the parameters (unknowns)
+- The _prior_ represents external knowledge about the parameters
+
+## What's different from what we were doing before?
+
+- We still have a likelihood and parameters to estimate
+- We now also have some extra constraints (defined by us) called the _prior distribution_
+- There is a clever Bayesian algorithm to create the resulting parameter estimates and their uncertainties
+- This full probability distribution of the outputs is the posterior distribution
+- The full posterior probability distribution is provided to us as a set of samples (recall class 2 on day 1) 
+
+## Choosing a prior
+
+- The key to choosing a prior distribution is to choose values which you believe represent the reasonable range that the parameter can take, or come from a related study in the literature
+- A prior which is a strong constraint on the parameters is called an _informative prior_
+- Some people argue that informative priors are bad, others that they are absolutely necessary in every model
+- Sometimes an informative prior can be the difference between being able to fit the model or not
+- Most people forget that choosing a likelihood probability distribution is exactly the same task as choosing a prior
+
+## Practical differences between frequentist statistics and Bayes
+
+- In frequentist statistics you tend to get a single best estimate of a parameter and a standard error, often assumed normally distributed, and a p-value
+- In Bayesian statistics you get a large set of samples of the parameter values which match the data best. You get to choose what you do with these
+- In frequentist statistics if the p-value is less than 0.05 you win. If not you cry and try a different model
+- In Bayesian statistics you try to quantify the size of an effect from the posterior distribution, or find a particular posterior probability, e.g. P(slope > 0 given the data). 
+
+## Stan and JAGS
+
+- We will be using two different software tools to calculate posterior distributions. These represent the state of the art for user-friendly, research quality Bayesian statistics.
+
+- Both have their own programming language which you can write in R and then fit the models to get the posterior distribution
+
+- All we have to do in the programming language is specify the likelihood and the priors, and give it the data. The software does the rest
+
+## Steps for running JAGS and Stan
+
+1. Write some Stan or JAGS code which contains the likelihood and the prior(s)
+1. Get your data into a list so that it matches the data names used in the Stan/JAGS code
+1. Run your model through Stan/JAGS
+1. Get the posterior output 
+1. Check convergence of the posterior probability distribution
+1. Create the output that you want (forecasts, etc)
+
+## Stan vs JAGS
+
+- Stan positives: very flexible, uses sensible distribution names, everything is declared, lots of documentation support, written by people at the top of the field
+- Stan negatives: cannot have discrete parameters, some odd declaration choices, slower to run code, code tends to be longer
+
+
+- JAGS positives: very quick for simple models, no declarations required, a bit older than Stan so more queries answered online
+- JAGS negatives: harder to get complex models running, not as fancy an algorithm as Stan, crazy way of specifying normal distributions
+
+## Reminder: sea level example
+
+```{r}
+sl = read.csv('../../data/tide_gauge.csv')
+with(sl, plot(year_AD, sea_level_m))
+```
+
+## Fitting linear regression models in JAGS
+
+\small
+```{r, message=FALSE, results='hide'}
+library(R2jags)
+jags_code = '
+model {
+  # Likelihood
+  for(i in 1:N) {
+    y[i] ~ dnorm(alpha + beta*x[i], sigma^-2)
+  }
+  # Priors
+  alpha ~ dnorm(0, 100^-2)
+  beta ~ dnorm(0, 100^-2)
+  sigma ~ dunif(0, 100)
+}'
+jags_run = jags(data = list(N = nrow(sl), 
+                            y = sl$sea_level_m,
+                            x = sl$year_AD),
+                parameters.to.save = c('alpha', 'beta',
+                                       'sigma'),
+                model.file = textConnection(jags_code))
+```
+
+## Output
+
+\tiny
+```{r}
+print(jags_run)
+```
+
+## Plotted output
+
+```{r}
+plot(jags_run)
+```
+
+## What do the results actually mean?
+
+- We now have access to the posterior distribution of the parameters:
+
+```{r}
+post = jags_run$BUGSoutput$sims.matrix
+head(post)
+```
+
+## Plots of output
+
+```{r, fig.height = 4}
+alpha_mean = mean(post[,'alpha'])
+beta_mean = mean(post[,'beta'])
+plot(sl$year_AD, sl$sea_level_m)
+lines(sl$year_AD, alpha_mean + 
+        beta_mean * sl$year_AD, col = 'red')
+```
+
+## Running the same model in Stan
+
+\small
+
+```{r}
+stan_code = '
+data {
+  int<lower=0> N;
+  vector[N] y;
+  vector[N] x;
+}
+parameters {
+  real alpha;
+  real beta;
+  real<lower=0> sigma;
+}
+model {
+  y ~ normal(alpha + beta * x, sigma);
+  alpha ~ normal(0, 100);
+  beta ~ normal(0, 100);
+  sigma ~ uniform(0, 100);
+}
+'
+```
+
+## Running the Stan version
+
+```{r, fig.height = 5, results='hide'}
+library(rstan)
+stan_run = stan(data = list(N = nrow(sl), 
+                            y = sl$sea_level_m,
+                            x = sl$year_AD/1000),
+                model_code = stan_code)
+```
+
+## Stan output
+
+\small
+```{r}
+print(stan_run)
+```
+
+## Stan plots
+
+```{r, message = FALSE, fig.height = 7}
+plot(stan_run)
+```
+
+## An AR(1) model in JAGS
+
+\small
+```{r, echo=TRUE}
+jags_code = '
+model {
+  # Likelihood
+  for (t in 2:N) {
+    y[t] ~ dnorm(alpha + beta * y[t-1], sigma^-2)
+  }
+
+  # Priors
+  alpha ~ dnorm(0, 100^-2)
+  beta ~ dunif(-1, 1)
+  sigma ~ dunif(0, 100)
+}
+'
+```
+
+## Run the model on the sheep
+
+```{r, fig.height = 4}
+sheep = read.csv('../../data/sheep.csv')
+plot(sheep$year, sheep$sheep, type = 'l')
+```
+
+```{r, message=FALSE, results='hide'}
+jags_run = jags(data = list(N = nrow(sheep), 
+                            y = sheep$sheep),
+                parameters.to.save = c('alpha',
+                                       'beta',
+                                       'sigma'),
+                model.file = textConnection(jags_code))
+```
+
+## Output
+
+\tiny
+```{r}
+print(jags_run)
+```
+
+## Plotted output
+
+```{r}
+plot(jags_run)
+```
+
+## Plots of one step ahead forecasts
+
+```{r, fig.height = 4}
+post = jags_run$BUGSoutput$sims.matrix
+alpha_mean = mean(post[,'alpha'])
+beta_mean = mean(post[,'beta'])
+plot(sheep$year, sheep$sheep)
+N = nrow(sheep)
+lines(sheep$year[2:N], alpha_mean + 
+        beta_mean * sheep$sheep[1:(N-1)], col = 'red')
+```
+
+## What are JAGS and Stan doing in the background?
+
+- JAGS and Stan run a stochastic algorithm called Markov chain Monte Carlo to create the samples from the posterior distribution
+- This involves:
+
+    1. Guessing at _initial values_ of the parameters. Scoring these against the likelihood and the prior to see how well they match the data
+    1. Then iterating:
+        1. Guessing _new parameter values_ which may or may not be similar to the previous values
+        1. Seeing whether the new values match the data and the prior by calculating _new scores_
+        1. If the scores for the new parameters are higher, keep them. If they are lower, keep them with some probability depending on how close the scores are, otherwise discard them and keep the old values
+        
+- What you end up with is a set of parameter values for however many iterations you chose. 
+
+## How many iterations?
+
+- Ideally you want a set of posterior parameter samples that are independent across iterations and is of sufficient size that you can get decent estimates of uncertainty
+- There are three key parts of the algorithm that affect how good the posterior samples are:
+
+    1. The starting values you chose. If you chose bad starting values, you might need to discard the first few thousand iterations. This is known as the _burn-in_ period
+    1. The way you choose your new parameter values. If they are too close to the previous values the MCMC might move too slowly so you might need to _thin_ the samples out by taking e.g. every 5th or 10th iteration
+    1. The total number of iterations you choose. Ideally you would take millions but this will make the run time slower
+    
+JAGS and Stan have good default choices for these but for complex models you often need to intervene
+
+## Plotting the iterations
+
+You can plot the iterations for all the parameters with `traceplot`, or for just one with  e.g. 
+```{r, fig.width = 8, fig.height = 3.5}
+plot(post[,'alpha'], type = 'l')
+```
+
+A good trace plot will show no patterns or runs, and will look like it has a stationary mean and variance
+
+## How many chains?
+
+- Beyond increasing the number of iterations, thinning, and removing a burn-in period, JAGS and Stan automatically run _multiple chains_
+- This means that they start the algorithm from 3 or 4 different sets of starting values and see if each _chain_ converges to the same posterior distribution
+- If the MCMC algorithm has converged then each chain should have the same mean and variance.
+- Both JAGS and Stan report the `Rhat` value, which is close to 1 when all the chains match
+- It's about the simplest and quickest way to check convergence. If you get `Rhat` values above 1.1, run your MCMC for more iterations
+
+## What else can I do with the output
+
+- We could create _credible intervals_ (Bayesian confidence intervals):
+\tiny
+```{r}
+apply(post, 2, quantile, probs = c(0.025, 0.975))
+```
+
+- Or histograms 
+```{r, fig.height = 3}
+hist(post[,'beta'], breaks = 30)
+```
+
+## Summary
+
+- Bayesian methods just add on a set of extra constraints on to the likelihood called prior distributions
+- We now know how to run some simple time series models in JAGS and Stan
+- We know that the fitting algorithm (MCMC) produces best parameter estimates and their uncertainties
+- We have to do a little bit more work to get the predictions out of JAGS or Stan
+- The big advantage of using these methods is the extra flexibility we get from being able to write our own models

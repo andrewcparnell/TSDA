@@ -1,0 +1,414 @@
+---
+title: 'Class 3: Multivariate time series models, Splines, and Gaussian processes'
+author: Andrew Parnell \newline \texttt{andrew.parnell@ucd.ie} \newline \vspace{1cm}
+  \newline \includegraphics[width=1cm]{../UCDlogo.pdf}
+output:
+  beamer_presentation:
+    includes:
+      in_header: ../header.tex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dev = 'pdf')
+par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
+#setwd("~/GitHub/ecots/slides/day_5")
+#setwd('/Volumes/MacintoshHD2/GitHub/ecots/slides/day_5/')
+options(width = 50)
+pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast', 'rstan')
+lapply(pkgs, library, character.only = TRUE)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+```
+
+## Learning outcomes
+
+- Create and fit some basic multivariate time series models
+- Learn how to fit some time series smoothing models: splines and Gaussian processes
+- Understand the state of the art in time series models, including latent factor models and dynamic parameter models
+
+## Introduction to multivariate models
+
+- Often we have multiple different observations at each time and we want to model them together
+- For example, we might have multiple different climate variables observed, or multiple chemical signatures. If they are correlated then by fitting them separately we will lose precision
+- If the observations are observed at different times for each time series we can use the NA trick, or create a latent state space model on which all measurements are regular
+
+## The Vector AR model
+
+\small
+
+- We can extend most of the models we have met to multivariate scenarios by applying the multivariate normal distribution instead of the univariate version
+- Suppose now that $y_t$ is a vector of length $k$ containing all the observations at time $t$
+- We can write:
+$$y_t = A + \Phi y_{t-1} + \epsilon_t,\; \epsilon_t \sim MVN(0, \Sigma)$$
+or equivalently 
+$$y_t \sim MVN(A + \Phi y_{t-1}, \Sigma)$$
+- where MVN is the multivariate normal distribution
+- Here the parameter vector $A$ controls the overall mean level for each of the $k$ series, $\Phi$ is a $k \times k$ matrix which controls the influence on the current value of the previous time points of _both_ series
+- $\Sigma$ here is a $k \times k$ matrix that controls the variance of the process and the residual correlation between the two series (NB: this is different from the GP formulation we met yesterday)
+
+## JAGS code for the VAR model
+
+\small
+
+```{r}
+model_code = '
+model
+{
+  # Likelihood
+  for (t in 2:T) {
+    y[t, ] ~ dmnorm(mu[t, ], Sigma.Inv)
+    mu[t, 1:k] <- A + Phi %*% y[t-1,]
+  }
+  Sigma.Inv ~ dwish(I, k+1)
+  Sigma <- inverse(Sigma.Inv)  
+
+  # Priors
+  for(i in 1:k) {
+    A[i] ~ dnorm(0, 0.01)
+    Phi[i,i] ~ dunif(-1, 1)
+    for(j in (i+1):k) {
+      Phi[i,j] ~ dunif(-1,1)
+      Phi[j,i] ~ dunif(-1,1)
+    }
+  }
+}
+'
+```
+
+## Example: joint temperature/sea level models
+
+```{r, include=FALSE}
+hadcrut = read.csv('../../data/hadcrut.csv')
+tg = read.csv('../../data/tide_gauge.csv')
+head(hadcrut)
+head(tg)
+
+# Correct the sea level ages
+tg$Year2 = tg$year_AD-0.5
+
+# Merge them together
+bivariate_data = merge(hadcrut, tg, by.x='Year', by.y='Year2')
+
+# Perhaps run on differences
+```
+```{r}
+par(mfrow=c(2,1))
+with(bivariate_data, plot(Year[-1], diff(Anomaly), type='l'))
+with(bivariate_data, plot(Year[-1], diff(sea_level_m), type='l'))
+```
+
+## VAR model results:
+
+```{r, include=FALSE}
+n_forecast = 10
+real_data_future = with(bivariate_data,
+                 list(T = nrow(bivariate_data) + n_forecast - 1,
+                      y = rbind(as.matrix(apply(bivariate_data[,c('Anomaly', 'sea_level_m')],2,'diff')), matrix(NA, ncol=2, nrow=n_forecast)),
+                      k = 2,
+                      I = diag(2)))
+
+# Choose the parameters to watch
+model_parameters =  c("y")
+
+real_data_run_future = jags(data = real_data_future,
+                     parameters.to.save = model_parameters,
+                     model.file=textConnection(model_code))
+
+y_future_pred = real_data_run_future$BUGSoutput$sims.list$y
+y_future_med = apply(y_future_pred,c(2,3),'median')
+year_all = c(bivariate_data$Year[-1],2010:(2010+n_forecast))
+```
+```{r, echo=FALSE}
+# Create plots
+par(mfrow=c(2,1))
+plot(year_all[-1]-1, bivariate_data$Anomaly[1]+cumsum(y_future_med[,1]), col='red', type='l', ylab = 'temperature prediction')
+with(bivariate_data, lines(Year, Anomaly))
+plot(year_all[-1]-1, bivariate_data$sea_level_m[1]+cumsum(y_future_med[,2]), col='red', type='l', ylab = 'sea level prediction')
+with(bivariate_data, lines(Year, sea_level_m))
+```
+
+# Splines and Gaussian processes
+
+## Regression with basis functions
+
+- A common alternative to standard linear regression is to use polynomial regression:
+$$y_i \sim N(\beta_0 + \beta_1 x_i + \beta_2 x_i^2 + \ldots + \beta_p x_i^p, \sigma^2)$$
+
+- This is simple to fit in JAGS/Stan using much of the code we have already seen
+
+- However, when $p$ is large this becomes very unwieldy, numerically unstable, hard to converge, and has some odd properties
+
+## Example
+
+- Let's go back to the sheep data and fit a non-linear regression model:
+```{r, fig.height = 5}
+sheep = read.csv('../../data/sheep.csv')
+with(sheep, plot(year, sheep, type = 'l'))
+```
+
+## Basis functions
+
+- When you have a matrix $X$ used in a regression model, the columns are often called _basis functions_
+```{r, fig.height = 4}
+x = seq(-3, 3, length = 100)
+X = cbind(1, x, x^2, x^3)
+plot(x, X[,1], ylim = range(X), type = 'l')
+for(i in 2:ncol(X)) lines(x,X[,i], col = i)
+```
+
+## Creating new basis functions
+
+- When we run a linear regression model using this matrix, we are multiplying each column by its associated $\beta$ value, and forming an estimate of $y$
+- As you can see, as we go up to powers of 3, 4, 5, etc, the values on the y-axis start to get really big
+- Why not replace these _polynomial basis functions_ with something better?
+
+## B-splines
+
+- Here are some better, beautiful, basis functions called _B-spline_ basis functions
+
+```{r, include = FALSE}
+tpower <- function(x, t, p)
+# Truncated p-th power function
+    (x - t) ^ p * (x > t)
+bbase <- function(x, xl = min(x), xr = max(x), nseg = 10, deg = 3){
+# Construct B-spline basis
+    dx <- (xr - xl) / nseg
+    knots <- seq(xl - deg * dx, xr + deg * dx, by = dx)
+    P <- outer(x, knots, tpower, deg)
+    n <- dim(P)[2]
+    D <- diff(diag(n), diff = deg + 1) / (gamma(deg + 1) * dx ^ deg)
+    B <- (-1) ^ (deg + 1) * P %*% t(D)
+    B }
+```
+
+```{r, fig.height = 4}
+B = bbase(x)
+plot(x,B[,1],ylim=range(B), type = 'l')
+for(i in 2:ncol(B)) lines(x,B[,i], col = i)
+```
+
+## P-splines
+
+- Now, instead of using a matrix $X$ with polynomial basis functions, we create a matrix $B$ of B-spline basis functions
+- Each basis function gets its own weight $\beta_j$ which determines the height of the curve
+- A common way to make the curve smooth is make the $\beta_j$ values similar to each other via a random walk. Often:
+$$\beta_j \sim N(\beta_{j-1}, \sigma_b^2)$$
+- This is known as a _penalised spline_ or P-spline model since you are penalising the spline basis weights by making them similar to each other
+
+## Example code in Stan
+
+\small
+```{r}
+stan_code = '
+data {
+  int<lower=0> N;
+  int<lower=0> p;
+  vector[N] y;
+  matrix[N,p] B;
+}
+parameters {
+  vector[p] beta;
+  real<lower=0> sigma_b;
+  real<lower=0> sigma;
+}
+model {
+  y ~ normal(B * beta, sigma);
+  beta[1] ~ normal(0, 10);
+  for(j in 2:p) 
+    beta[j] ~ normal(beta[j-1], sigma_b);
+  sigma_b ~ cauchy(0, 10);
+  sigma ~ cauchy(0, 10);
+}
+'
+```
+
+```{r, message=FALSE, results='hide', include=FALSE}
+B = bbase(sheep$year)
+stan_run = stan(data = list(N = nrow(sheep), 
+                            p = ncol(B),
+                            y = sheep$sheep,
+                            B = B),
+                model_code = stan_code)
+```
+
+## Stan output
+
+```{r, message=FALSE, fig.height=4}
+beta = apply(extract(stan_run, pars = 'beta')$beta,
+             2,'mean')
+plot(sheep$year, sheep$sheep)
+lines(sheep$year, B%*%beta, col = 'red')
+```
+
+## An alternative: Gaussian processes
+
+- Whilst splines are great, they tend to use many parameters. You have to decide how many basis functions you want, and the advice is to use as many as possible
+- The idea is that the penalty term induces the smoothness so it doesn't matter how many you used. But the model will be much slower to converge
+- An alternative is to use a multivariate normal distribution, where you constrain the correlation between the elements of the distribution to be larger when they are close together. This is called a _Gaussian process_
+
+## A Gaussian process model:
+
+- We write the Gaussian process model as:
+$$y \sim MVN(\alpha, \Sigma + \sigma^2 I)$$
+
+- Here $\alpha$ is a single parameter which represents the overall mean (but could also include regression covariates)
+- $\Sigma$ is a covariance matrix with terms:
+$$\Sigma_{ij} = \tau^2 \exp \left( -\phi (x_i - x_j)^2 \right)$$
+If you think about this, when $x_i$ and $x_j$ are close then you get a value of approximately $\tau^2$. When they're far away you get a value of zero
+- $\sigma$ represents the residual standard deviation, as usual
+
+## A GP model in Stan
+
+\tiny
+```{r}
+stan_code = '
+data {
+  int<lower=1> N;
+  vector[N] x;
+  vector[N] y;
+}
+transformed data {
+  vector[N] alpha;
+  for (i in 1:N) alpha[i] = 0;
+}
+parameters {
+  real<lower=0> eta_sq;
+  real<lower=0> inv_rho_sq;
+  real<lower=0> sigma_sq;
+}
+transformed parameters {
+  real<lower=0> rho_sq;
+  rho_sq = inv(inv_rho_sq);
+} model {
+  matrix[N, N] Sigma;
+  // off-diagonal elements
+  for (i in 1:(N-1)) {
+    for (j in (i+1):N) {
+      Sigma[i, j] = eta_sq * exp(-rho_sq * pow(x[i] - x[j],2));
+      Sigma[j, i] = Sigma[i, j];
+    } 
+  }
+  // diagonal elements
+  for (k in 1:N)
+    Sigma[k, k] = eta_sq + sigma_sq;
+  eta_sq ~ cauchy(0, 5);
+  inv_rho_sq ~ cauchy(0, 5);
+  sigma_sq ~ cauchy(0, 5);
+  y ~ multi_normal(alpha, Sigma);
+}
+'
+```
+
+```{r, include = FALSE}
+stan_code = '
+data {
+  int<lower=1> N1;
+  vector[N1] x1;
+  vector[N1] y1;
+  int<lower=1> N2;
+  vector[N2] x2;
+}
+transformed data {
+  int<lower=1> N;
+  vector[N1+N2] x;
+  N = N1 + N2;
+  for (n in 1:N1) x[n] = x1[n];
+  for (n in 1:N2) x[N1 + n] = x2[n];
+}
+parameters {
+  vector[N2] y2;
+  real<lower=0> eta_sq;
+  real<lower=0> inv_rho_sq;
+  real<lower=0> sigma_sq;
+  real alpha;
+  real beta;
+}
+transformed parameters {
+  real<lower=0> rho_sq;
+  vector[N1+N2] mu;
+  rho_sq = inv(inv_rho_sq);
+  for (i in 1:N) mu[i] = alpha + beta * x[i];
+} 
+model {
+  matrix[N,N] Sigma;
+  vector[N] y;
+
+// off-diagonal elements
+  for (i in 1:(N-1)) {
+    for (j in (i+1):N) {
+      Sigma[i, j] = eta_sq * exp(-rho_sq * pow(x[i] - x[j],2));
+      Sigma[j, i] = Sigma[i, j];
+    } 
+  }
+  // diagonal elements
+  for (k in 1:N)
+    Sigma[k, k] = eta_sq + sigma_sq;
+  eta_sq ~ cauchy(0, 5);
+  inv_rho_sq ~ cauchy(0, 5);
+  sigma_sq ~ cauchy(0, 5);
+  
+  for (n in 1:N1) y[n] = y1[n];
+  for (n in 1:N2) y[N1 + n] = y2[n];
+  y ~ multi_normal(mu, Sigma);
+}
+'
+x2 = (max(sheep$year)+1):(max(sheep$year) + 20)
+stan_run = stan(data = list(N1 = nrow(sheep), 
+                            N2 = 20,
+                            x2 = x2,
+                            x1 = sheep$year,
+                            y1 = sheep$sheep),
+                model_code = stan_code)
+```
+
+## Stan output
+
+```{r, message=FALSE, echo = FALSE}
+pred_ci = apply(extract(stan_run, pars = 'y2')$y2, 
+             2, 'quantile', c(0.25,0.5,0.75))
+plot(sheep$year, sheep$sheep, xlim = c(min(sheep$year),
+                                       max(sheep$year)+20), 
+     ylim = c(200, 550), type = 'l')
+lines(x2, pred_ci[1,], col = 'red')
+lines(x2, pred_ci[2,], col = 'red')
+lines(x2, pred_ci[3,], col = 'red')
+```
+
+## Notes on GPs
+
+- Whilst GPs have far fewer parameters than splines, they tend to be slower to fit because the calculation of the density for the multivariate normal involves a matrix inversion which is really slow
+- There are lots of fun ways to fiddle with GP models, as you can change the function that controls the way the covariance decays, or add in extra information in the mean
+- There is a very useful but quite fiddly formula that enables you to predict for new values of $y$ from new values of $x$ just like a regression
+
+# Time Series: the state of the art
+
+## Mixing up state space models, multivariate time series, Gaussian processes
+
+- We can extend the simple state space model we met earlier to work for multivariate series
+- We would have a state equation that relates our observations to a multivariate latent time series (possibly of a different dimension)
+- We could change the time series model of the latent state to be an ARIMA model, an O-U process, a Gaussian process, or anything else you can think of!
+
+## Dynamic linear models
+
+- So far in all our models we have forced the time series parameters to be constant over time
+- In a _Dynamic Linear Model_ we have a state space model with :
+$$ y_t = F_t x_t + \epsilon_t,\; \epsilon_t \sim MVN(0, \Sigma_t)$$
+$$ x_t = G_t x_{t-1} + \gamma_t,\; \gamma_t \sim N(0, \Psi_t)$$
+- The key difference here is that the transformation matrices $F_t$ and $G_t$ can change over time, as can the variance matrices $\Sigma_t$ and $\Psi_t$, possibly in an ARCH/GARCH type framework
+- These are very hard models to fit in JAGS/Stan but simple versions can work
+
+## Latent factor time series models
+
+- If we have very many series, a common approach to reduce the dimension is to use Factor Analysis or Principal components
+- In a latent factor model we write:
+$$y_t = B f_t + \epsilon_t$$
+where now $B$ is a $num series \times num factors$  factor loading matrix which transforms the high dimensional $y_t$ into a lower dimensional $f_t$. 
+- $f_t$ can then be run using a set of univariate time series, e.g. random walks 
+- The $B$ matrix is often hard to estimate and might require some tight priors
+
+## Summary
+
+- We have seen how to fit basic Bayesian state space models and observed some of their pitfalls
+- We know how to create some simple multivariate time series models
+- We have seen some of the more advanced ideas in time series models such as DLMs and dynamic factor models
+- You are now an expert in time series!

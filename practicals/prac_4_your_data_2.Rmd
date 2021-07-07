@@ -1,0 +1,40 @@
+---
+title: 'Day 4: Self-guided practical - start analysing your own data set with Bayes'
+author: "Andrew Parnell"
+output:
+  pdf_document: default
+  html_document: default
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+rm(list=ls()) # Clear the workspace
+knitr::opts_chunk$set(echo = TRUE)
+par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01, las=1)
+setwd("~/GitHub/ecots/practicals")
+#setwd('/Volumes/MacintoshHD2/GitHub/ecots/practicals')
+options(width = 50)
+pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast', 'rstan')
+lapply(pkgs, library, character.only = TRUE)
+
+```
+
+## Introduction
+
+If your time series is in any way irregular; repeated observations, missing values, multivariate, etc, you are not going to be able to analyse it fully with the `forecast` package. I would strongly recommend moving over to using JAGS or Stan to fit your models. In this practical you will move over from using `forecast` to fitting a fully Bayesian statistical model.
+
+## Tasks
+
+1. Take your data set (or the one you were using yesterday)
+1. Pick either JAGS or Stan. Go back and revise one of the simpler models that reasonably matches your data (e.g. linear regression, AR(1), etc) and check you can get it to run on example data
+1. Keep the model the same, but change the setup code so your data set works with it
+1. Start to expand the model. This might involve:
+
+    - Adding in explanatory variables
+    - Adding in extra AR or MA components
+    - Including Fourier or seasonal parts
+    - Including stochastic volatility or heteroskedastic components
+    
+1. When you have got a model running, make sure to check convergence using the R-hat values. If the model hasn't converged try increasing the number of iterations. If it still doesn't converge, then it might be a problem with the model definition. Get some help
+1. Try a few different similar models and compare using the DIC if using JAGS or WAIC if using Stan. 
+1. See if you can create some forecasts (if that is your goal) or interpret your model output

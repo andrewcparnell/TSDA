@@ -1,0 +1,278 @@
+---
+title: 'Class 2: Moving averages and ARMA'
+author: Andrew Parnell \newline \texttt{andrew.parnell@ucd.ie} \newline \vspace{1cm}
+  \newline \includegraphics[width=1cm]{../UCDlogo.pdf}
+output:
+  beamer_presentation:
+    includes:
+      in_header: ../header.tex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dev = 'pdf')
+par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
+setwd("~/GitHub/ecots/slides/day_2")
+pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast', 'rstan')
+lapply(pkgs, library, character.only = TRUE)
+```
+
+## Learning outcomes
+
+- Recognise and understand the basic theory behind MA(1) and MA(q) models
+- Understand the basic ARMA(p,q) formulation
+- Know the basics of using the `forecast` package
+- Understand the limitations of ARMA forecasting
+
+## Reminder: The most important slide in the course
+
+\Large
+
+Almost all of time series is based on two ideas:
+
+1. Base your future predictions on previous values of the data
+1. __Base your future predictions on how wrong you were in your past predictions__
+
+
+## Reminder: AR models
+
+- An Autoregressive (AR) model works by making the current data point dependent on the previous value, dampened by a parameter
+- The usual likelihood used is:
+$$y_t \sim N( \alpha + \beta y_{t-1}, \sigma^2)$$
+- $\beta$ is usually constrained (naturally via the data) to lie between -1 and 1. Outside that range the process blows up
+- The sample PACF is often a good way of diagnosing if an AR model might be appropriate
+
+## Intro to Moving Average Models
+
+- Moving Average (MA) models are similar to AR models but they depend on the previous residual of the series rather than the value itself
+- The previous residual is made up of how well we forecasted the last value of the series
+- If the previous residual was large (i.e. our forecast was bad) then we want to make a big change to the next prediction
+- If the previous residual was small (i.e. our forecast was good) then we might not want to make much of a change
+
+## Moving average models and the ACF/PACF
+
+- Recall that the sample partial autocorrelation function (PACF) can be used to diagnose whether an AR model is appropriate (and also suggest the order $p$)
+- For the MA model, it is the sample autocorrelation function (ACF) that helps determine the order of the model
+```{r,echo=FALSE,fig.height=3, fig.width = 5}
+q = 1 # Order
+T = 100
+sigma = 1
+alpha = 0
+set.seed(123)
+theta = runif(q)
+y = rep(NA,T)
+y[1:q] = rnorm(q,0,sigma)
+eps = rep(NA,T)
+eps[1:q] = y[1:q] - alpha
+for(t in (q+1):T) {
+  y[t] = rnorm(1, mean = alpha + sum(theta*eps[(t-q):(t-1)]), sd = sigma)
+  eps[t] = y[t] - alpha - sum(theta*eps[(t-q):(t-1)])
+}
+q = 4 # Order
+T = 100
+sigma = 1
+alpha = 0
+set.seed(123)
+theta = runif(q)
+y2 = rep(NA,T)
+y2[1:q] = rnorm(q,0,sigma)
+eps = rep(NA,T)
+eps[1:q] = y[1:q] - alpha
+for(t in (q+1):T) {
+  y2[t] = rnorm(1, mean = alpha + sum(theta*eps[(t-q):(t-1)]), sd = sigma)
+  eps[t] = y2[t] - alpha - sum(theta*eps[(t-q):(t-1)])
+}
+par(mfrow=c(1,2))
+acf(y,main='MA(1)')
+acf(y2,main='MA(4)')
+```
+
+## Example 1: MA(1)
+
+- The MA(1) model is defined as:
+$$y_t = \alpha + \theta \epsilon_{t-1} + \epsilon_t$$
+where $\epsilon_t \sim N(0,\sigma^2)$ as usual
+- Parameter $\alpha$ represents the overall mean, whilst $\theta$ controls the amount of weight placed on previous residuals
+- Like the AR model the values of $\theta$ are not expected to be outside (-1, 1), and negative values can sometimes be physically unrealistic
+- The likelihood version of the model is:
+$$y_t \sim N(\alpha + \theta \epsilon_{t-1}, \sigma^2)$$
+
+## Simulating from the MA(1) process
+
+Below is some simple code to simulate from an MA(1) process. Note that the first values of `y` and `eps` need to be initialised
+```{r, include=FALSE}
+set.seed(123)
+```
+```{r}
+T = 100 # Number of observations
+sigma = 1 # Residual sd
+alpha = 0 # Mean
+theta = runif(1) # Choose a positive value
+y = eps = rep(NA,T)
+y[1] = alpha
+eps[1] = 0
+for(t in 2:T) {
+  y[t] = rnorm(1, mean = alpha + theta * eps[t-1], 
+               sd = sigma)
+  eps[t] = y[t] - alpha - theta * eps[t-1]
+}
+```
+
+## Time series plot
+
+```{r,fig.align='center'}
+plot(1:T,y,type='l')
+```
+
+## Fitting MA(1) models
+
+- We can fit an MA(1) model with the `forecast` package like before
+```{r}
+Arima(y, order = c(0, 0, 1))
+```
+
+## Extending to MA(q)
+
+- As with the AR(p) process we can extend this model to have the current value of $y$ depending on more than one previous residual
+- The model becomes an MA(q) model with:
+$$y_t \sim N(\alpha + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \ldots + \theta_q \epsilon_{t-q}, \sigma^2)$$
+- The parameters are as before, except there are now $q$ values of $\theta$. 
+- Usually when estimated they will decrease with $q$; the older residuals matter less
+
+## Fitting an MA(q) model
+
+```{r}
+Arima(y, order = c(0, 0, 3))
+```
+
+- Compare the AIC of this model with the previous MA(1) version
+
+## Forecasting an MA value
+
+- You can create a one step ahead forecast for an MA(1) model by:
+$$\hat{y}_{t+1} = \hat{\alpha} + \hat{\theta} \epsilon_t$$
+
+- Forecasts of more than one step ahead will be pretty boring, as every future prediction of $\hat{\epsilon}_t$ will be 0
+
+- Thus MA(q) models are only really informative if you are forecasting $q$ steps ahead
+
+## Combining AR and MA into ARMA
+
+- There is no reason why we have to use just AR or MA on their own
+- It's possible to combine them together, for example:
+$$y_t = \alpha + \beta y_{t-1} + \theta \epsilon_{t-1} + \epsilon_t$$
+This is an _Autoregressive Moving Average_ (ARMA) model
+- It's often written as ARMA(p,q) where $p$ is the number of AR terms (here 1) and $q$ the number of MA terms (here also 1)
+- ARMA models can deal with a very wide variety of flexible time series behaviour, though they remain stationary
+- The likelihood format is:
+$$y_t \sim N( \alpha + \beta y_{t-1} + \theta \epsilon_{t-1}, \sigma^2 )$$
+
+## Fitting an ARMA(1, 1) model
+
+```{r}
+Arima(y, order = c(1, 0, 1))
+```
+
+- Compare again with previous models
+
+## The general ARMA(p, q) framework
+
+- The general equation for an ARMA(p, q) model is:
+
+$$y_t = \alpha + \sum_{i=1}^p \beta_i y_{t-i} + \sum_{j=1}^q \theta_j \epsilon_{t-j} + \epsilon_t$$
+
+- The values of $\beta$ and $\theta$ have to be tightly controlled to get a series that is stationary, though this is only really a problem if we want to simulate the time series
+
+- Occasionally you will run into problems with `Arima` because it doesn't use maximum likelihood (by default) to fit the models. It uses something faster and more approximate instead
+
+## Predicting the future with ARMA
+
+- The `forecast` package contains methods to predict into the future
+- First create a model (here ARMA(2, 1))
+```{r}
+my_model = Arima(y, order = c(2, 0, 1))
+```
+- ...then forecast...
+```{r, fig.height = 4}
+plot(forecast(my_model,h = 10))
+```
+
+# A real-world example
+
+## Steps in a time series analysis
+
+1. Plot the data and the ACF/PACF
+1. Decide if the data look stationary or not. If not, perform a suitable transformation and return to 1
+1. Guess at a suitable $p$ and $q$ for an ARMA(p, q) model 
+1. Fit the model
+1. Try a few models around it by increasing/decreasing $p$ and $q$ and checking the AIC (or others)
+1. Check the residuals
+1. Forecast into the future
+
+
+
+## A real example: wheat data
+
+- Let's follow the steps for the wheat data:
+```{r}
+wheat = read.csv('../../data/wheat.csv')
+plot(wheat$year, wheat$wheat, type = 'l')
+```
+
+## ACF and PACF 
+
+```{r, fig.height = 5}
+par(mfrow = c(1, 2))
+acf(wheat$wheat)
+pacf(wheat$wheat)
+```
+
+- Suggest starting with AR(1) or AR(3)?
+
+## First model
+
+```{r}
+Arima(wheat$wheat, order = c(1, 0, 0))
+```
+
+## Next models
+
+- Try AR(2), ARMA(1, 1), and ARMA(2, 1)
+```{r}
+Arima(wheat$wheat, order = c(2, 0, 0))$aic
+Arima(wheat$wheat, order = c(1, 0, 1))$aic
+Arima(wheat$wheat, order = c(2, 0, 1))$aic
+```
+
+- Best one seems to be ARMA(2, 1). (could also try others)
+
+## Check residuals
+
+- Check the residuals of this model
+```{r, fig.height = 5}
+my_model_ARMA21 = Arima(wheat$wheat, order = c(2, 0, 1))
+qqnorm(my_model_ARMA21$residuals)
+qqline(my_model_ARMA21$residuals)
+```
+
+## Forecast into the future
+
+```{r}
+plot(forecast(my_model_ARMA21,h=20))
+```
+
+## What happened to the forecasts here?
+
+- Why did the series diverge rapidly away from what you might have expected?
+
+- The answer is that we have fitted a _stationary model_, i.e. one with constant mean and variance
+
+- The model will just slowly reverts back to that mean over time. The speed at which it reverts will depend on the amount of autocorrelation in the series
+
+- The solution to this lies in better identification of the trend. See the next lecture!
+
+## Summary
+
+- MA(q) models are used to create future forecasts based on the error in the previous forecasts
+- ARMA models combine AR and MA ideas together
+- The `forecast` package allows us to fit all of these models
+- We need to be a bit careful with forecasts that assume stationarity - they will mean-revert

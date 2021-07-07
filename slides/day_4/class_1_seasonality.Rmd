@@ -1,0 +1,310 @@
+---
+title: 'Class 1: Modelling with seasonality and the frequency domain'
+author: Andrew Parnell \newline \texttt{andrew.parnell@ucd.ie} \newline \vspace{1cm}
+  \newline \includegraphics[width=1cm]{../UCDlogo.pdf}
+output:
+  beamer_presentation:
+    includes:
+      in_header: ../header.tex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dev = 'pdf')
+par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
+setwd("~/GitHub/ecots/slides/day_4")
+#setwd('/Volumes/MacintoshHD2/GitHub/ecots/slides/day_4/')
+options(width = 50)
+pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast', 'rstan')
+lapply(pkgs, library, character.only = TRUE)
+```
+
+## Learning outcomes
+
+- Understand how to fit seasonal models in `forecast` and JAGS
+- Understand seasonal differencing and sARIMA models
+- Know the difference between time and frequency domain models and be able to implement a basic Fourier model
+
+## Seasonal time series
+
+- So far we haven't covered how to deal with data that are _seasonal_ in nature
+- These data generally fall into two categories:
+
+    1. Data where we know the frequency or frequencies (e.g. monthly data on a yearly cycle, frequency = 12)
+    2. Data where we want to estimate the frequencies (e.g. climate time series, animal populations, etc)
+
+- The former are easier, and there are many techniques for inducing seasonal behaviour
+
+- The latter are much more interesting. The ACF and PACF can help, but we can usually do much better by creating a _power spectrum_
+
+## An example seasonal series
+
+```{r, fig.height = 4}
+CO2 = read.csv(file = '../../data/CO2.csv', 
+               na.strings = -99.99)
+CO2$date = as.Date(paste(CO2$year, CO2$month ,'01', 
+                         sep = '-'))
+CO2_1990 = CO2[CO2$year >= 1990, ]
+with(CO2_1990, plot(date, CO2_ppm, type = 'l', 
+                    ylab = 'CO2 (parts per million)', 
+                    xlab = 'Year'), las = 1)
+```
+
+## ACF and PACF
+
+```{r, fig.height = 6}
+par(mfrow = c(1, 2))
+acf(CO2_1990$CO2_ppm)
+pacf(CO2_1990$CO2_ppm)
+```
+
+## Seasonal time series 1: including seasonality as a covariate
+
+- The simplest way is to include month as a covariate in a regression type model
+
+\small
+```{r}
+CO2_1990$mfac = model.matrix(~ as.factor(CO2_1990$month) - 1)
+colnames(CO2_1990$mfac) = month.abb
+lm(CO2_ppm ~ year + mfac, data = CO2_1990)
+```
+
+## Forecasts
+
+```{r, fig.height = 6}
+CO2_ts = ts(CO2_1990$CO2_ppm, frequency = 12, 
+            start = c(1990, 1))
+s_model_1 = tslm(CO2_ts ~ trend + season)
+plot(forecast(s_model_1, h = 24))
+```
+
+## What is the time series model doing here?
+
+- This is just a regression model, so that:
+$$y_t = \alpha + \beta_t \mbox{year}_t + \gamma_{1} \mbox{Feb}_t + \gamma_{2} \mbox{Mar}_t + \ldots + \gamma_{11} \mbox{Dec}_t + \epsilon_t$$
+
+- You can do this using `lm` or using `forecast`'s special function for linear regression forecasting `tslm`
+
+- The `tslm` function is clever because it can automatically create the seasonal indicator variables
+
+- Remember that when dealing with indicator variables you have to drop one factor level for the model to fit
+
+## Seasonal time series 2: seasonal differencing
+
+- We have already met methods which difference the data (possibly multiple times) at lag 1
+
+- We can alternatively create a seasonal difference by differencing every e.g. 12th observation
+
+```{r, fig.height = 5}
+CO2_diff = diff(CO2_1990$CO2_ppm, lag = 12)
+plot(CO2_diff, type = 'l')
+```
+
+## Differenced acf and pacf
+
+```{r, fig.height = 6}
+par(mfrow = c(1, 2))
+acf(CO2_diff, na.action = na.pass)
+pacf(CO2_diff, na.action = na.pass)
+```
+
+## Fit an ARIMA model with a seasonal difference
+
+```{r}
+CO2_1990_ts = ts(CO2_1990$CO2_ppm, frequency = 12, 
+                 start =c(1990, 1))
+Arima(CO2_1990_ts, order = c(1, 0, 0), 
+      seasonal = c(0, 1, 0),
+      include.drift = TRUE)
+```
+
+## Forecasts from seasonally differenced series
+
+```{r, fig.height = 5}
+s_model_2 = Arima(CO2_1990_ts, order = c(1, 0, 0), 
+                  seasonal = c(0, 1, 0), include.drift = TRUE)
+plot(forecast(s_model_2, h = 24))
+```
+
+- Pretty good. Might be able to do better with some richer models
+
+## A full seasonal arima model
+
+- We previously met the ARIMA specification where:
+$$\mbox{diff}^d(y_t)= \mbox{constant} + \mbox{AR terms} + \mbox{MA terms} + \mbox{error}$$
+
+- We can extend this to include seasonal differencing and _seasonal AR and MA_ terms to create a seasonal ARIMA or sARIMA model
+
+- For example:
+$$y_t - y_{t-12} = \alpha + \beta y_{t-1} + \gamma y_{t-12} + \epsilon_t$$
+
+- This is a sARIMA$(1,0,0)(1,1,0)_{12}$ model
+
+## Fitting sARIMA models in `forecast`
+
+```{r}
+auto.arima(CO2_1990_ts)
+```
+
+## Plotting forecasts
+
+```{r, fig.height = 6}
+s_model_3 = auto.arima(CO2_1990_ts)
+plot(forecast(s_model_3, h = 24))
+```
+
+## A simple sARIMA model with JAGS
+
+```{r}
+model_code = '
+model
+{
+  # Likelihood
+  for (t in (s+1):T) {
+    y[t] ~ dnorm(mu[t], sigma^-2)
+    mu[t] <- alpha + beta * y[t-1] + gamma * y[t-s]
+  }
+
+  # Priors
+  alpha ~ dnorm(0, 10^-2)
+  beta ~ dnorm(0, 10^-2)
+  gamma ~ dnorm(0, 10^-2)
+  sigma ~ dunif(0, 100)
+}
+'
+```
+
+## Fitting a sARIMA$(1,0,0)(1,0,0)_{12}$ model in JAGS
+
+\tiny 
+
+```{r, message = FALSE, results = 'hide'}
+s_model_4 = jags(data = list(y = CO2_ts, s = 12, 
+                             T = length(CO2_ts)),
+                 parameters.to.save = c('alpha', 'beta', 
+                                        'gamma', 'sigma'),
+                 model.file=textConnection(model_code))
+```
+```{r}
+print(s_model_4)
+```
+
+
+## Multiple seasonality
+
+- Very occasionally you come across multiple seasonality models
+
+- For example you might have hourly data over several months with both hourly and monthly seasonality
+
+- `forecast` has a special function for creating multiple series time series: `msts`
+
+```{r, eval = FALSE}
+x = msts(taylor, seasonal.periods=c(48,336), 
+         start=2000+22/52)
+```
+
+- The above is half-hourly data so has period 48 hours and 336 hours, i.e. weekly (336/48 = 7)
+
+- `forecast` has some special functions (notably `tbats`) for modelling multi seasonality data
+
+# Frequency estimation
+
+## Methods for estimating frequencies
+
+- The most common way to estimate the frequencies in a time series is to decompose it in a _Fourier Series_
+
+- We write:
+$$ y_t = \alpha + \sum_{k=1}^K \left[ \beta_k \sin (2 \pi t f_k) + \gamma_k \cos (2 \pi t f_k) \right] + \epsilon_t$$
+
+- Each one of the terms inside the sum is called a _harmonic_. We decompose the series into a sum of sine and cosine waves rather than with AR and MA components
+
+- Each sine/cosine pair has its own frequency $f_k$. If the corresponding coefficients $\beta_k$ and $\gamma_k$ are large we might believe this frequency is important
+
+## Estimating frequencies via a Fourier model
+
+- It's certainly possible to fit the model in the previous slide in JAGS, as it's just a linear regression model with clever explanatory variables
+
+- However, it can be quite slow to fit and, if the number of frequencies $K$ is high, or the frequencies are close together, it can struggle to converge
+
+- More commonly, people repeatedly fit the simpler model:
+$$ y_t = \alpha + \beta \sin (2 \pi t f_k) + \gamma \cos (2 \pi t f_k) + \epsilon_t$$
+for lots of different values of $f_k$. Then calculate the _power spectrum_ as $P(f_k) = \frac{\beta^2 + \gamma^2}{2}$. Large values of the power spectrum indicate important frequencies 
+
+- It's much faster to do this outside of JAGS, using other methods, but we will stick to JAGS
+
+## JAGS code for a Fourier model
+
+\small
+
+```{r}
+model_code = '
+model
+{
+  # Likelihood
+  for (t in 1:T) {
+    y[t] ~ dnorm(mu[t], sigma^-2)
+    mu[t] <- alpha + beta * cos(2*pi*t*f_k) + 
+                gamma * sin(2*pi*t*f_k )
+  }
+  P = (pow(beta, 2) + pow(gamma, 2)) / 2
+
+  # Priors
+  alpha ~ dnorm(0, 10^-2)
+  beta ~ dnorm(0, 10^-2)
+  gamma ~ dnorm(0, 10^-2)
+  sigma ~ dunif(0, 100)
+}
+'
+```
+
+## Example: the Lynx data
+```{r, message=FALSE}
+lynx = read.csv('../../data/lynx.csv')
+plot(lynx, type = 'l')
+```
+
+## Code to run the JAGS model repeatedly
+
+```{r, message=FALSE, results='hide'}
+periods = 5:40
+K = length(periods)
+f = 1/periods
+Power = rep(NA,K)
+
+for (k in 1:K) {
+  curr_model_data = list(y = as.vector(lynx[,2]),
+                         T = nrow(lynx),
+                         f_k = f[k],
+                         pi = pi)
+
+  model_run = jags(data = curr_model_data,
+                   parameters.to.save = "P",
+                   model.file=textConnection(model_code))
+
+  Power[k] = mean(model_run$BUGSoutput$sims.list$P)
+}
+```
+
+## Plotting the periodogram
+
+```{r, fig.height = 6}
+par(mfrow = c(2, 1))
+plot(lynx, type = 'l')
+plot(f, Power, type='l')
+axis(side = 3, at = f, labels = periods)
+```
+
+## Bayesian vs traditional frequency analysis
+
+- For quick and dirty analysis, there is no need to run the full Bayesian model, the R function `periodogram` in the TSA package will do the job, or `findfrequency` in `forecast` which is even simpler
+
+- However, the big advantage (as always with Bayes) is that we can also plot the uncertainty in the periodogram, or combine the Fourier model with other modelling ideas (e.g. ARIMA)
+
+- There are much fancier versions of frequency models out there (e.g. Wavelets, or frequency selection models) which can also be fitted in JAGS but require a bit more time and effort
+
+- These Fourier models work for continuous time series too
+
+## Summary
+
+- We now know how to fit models for seasonal data via seasonal factors, seasonal differencing, and sARIMA models
+- We can fit these using `forecast` or JAGS
+- We've seen a basic Fourier model for estimating frequencies via the Bayesian periodogram

@@ -1,0 +1,41 @@
+---
+title: 'Day 3: Self-guided practical - finding the best time series model for your data set'
+author: "Andrew Parnell"
+output:
+  pdf_document: default
+  html_document: default
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+rm(list=ls()) # Clear the workspace
+knitr::opts_chunk$set(echo = TRUE)
+par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01, las=1)
+setwd("~/GitHub/ecots/practicals")
+#setwd('/Volumes/MacintoshHD2/GitHub/ecots/practicals')
+options(width = 50)
+pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast', 'rstan')
+lapply(pkgs, library, character.only = TRUE)
+
+```
+
+## Introduction
+
+By now you've seen pretty much everything that the `forecast` package has to offer, and a little bit of the Bayesian models too. This should give you just enough information to get started on your own data set. However, if you still haven't seen anything that looks like your data yet, try analysing one of the example data sets in the `data` folder, or go online and find a good data set. There are lots of good sites, including:
+
+- The R `datasets` library. Just type `library(help = "datasets")`
+- The [Time Series Data Library](https://datamarket.com/data/list/?q=provider:tsdl) hosted on datamarket.com
+- Some of the forecasting competition sites, such as [Kaggle](https://www.kaggle.com/), [CrowdAnalytix](https://www.crowdanalytix.com/), and [TunEdit](http://tunedit.org/)
+
+## Tasks
+
+You know the drill by now! Take your data set and:
+
+1. Plot it
+1. Transform it if necessary (by e.g. differencing or Box-Cox)
+1. Fit an ARIMA, ARIMAX, or similar model
+1. Use a suitable test set, AIC, or rolling origin forecast to decide on the best models
+1. Check the residuals
+1. Predict the future!
+
+We are always happy to help so feel free to grab us for advice

@@ -1,0 +1,333 @@
+---
+title: 'Class 3: Model choice and forecasting with Bayes'
+author: Andrew Parnell \newline \texttt{andrew.parnell@ucd.ie} \newline \vspace{1cm}
+  \newline \includegraphics[width=1cm]{../UCDlogo.pdf}
+output:
+  beamer_presentation:
+    includes:
+      in_header: ../header.tex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dev = 'pdf')
+par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
+setwd("~/GitHub/ecots/slides/day_3")
+options(width = 50)
+pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast', 'rstan')
+lapply(pkgs, library, character.only = TRUE)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+```
+
+## Learning outcomes
+
+- See some JAGS code for fitting AR(p), ARMA(p, q) and ARIMAX(p, d, q) models
+- Know to check model fit for a Bayesian model using the posterior predictive distribution
+- Know how to create k-step ahead forecasts with uncertainty using JAGS
+
+## JAGS code for an AR(p) model
+
+```{r}
+model_code = '
+model {
+  # Likelihood
+  for (t in (p+1):N) {
+    y[t] ~ dnorm(mu[t], sigma^-2)
+    mu[t] <- alpha + inprod(beta, y[(t-p):(t-1)])
+  }
+
+  # Priors
+  alpha ~ dnorm(0, 100^-2)
+  for (i in 1:p) {
+    beta[i] ~ dnorm(0, 100^-2)
+  }
+  sigma ~ dunif(0, 100)
+}'
+```
+
+## JAGS code for an ARMA(p, q) model
+
+\tiny
+
+```{r}
+model_code = '
+model
+{
+  # Set up residuals
+  for(t in 1:max(p,q)) {
+    eps[t] <- z[t] - alpha
+  }
+  # Likelihood
+  for (t in (max(p,q)+1):N) {
+    z[t] ~ dnorm(alpha + ar_mean[t] + ma_mean[t], sigma^-2)
+    ma_mean[t] <- inprod(theta, eps[(t-q):(t-1)])
+    ar_mean[t] <- inprod(beta, z[(t-p):(t-1)])
+    eps[t] <- z[t] - alpha - ar_mean[t] - ma_mean[t]
+  }
+  # Priors
+  alpha ~ dnorm(0, 10^-2)
+  for (i in 1:q) {
+    theta[i] ~ dnorm(0, 10^-2)
+  }
+  for(i in 1:p) {
+    beta[i] ~ dnorm(0, 10^-2)
+  }
+  sigma ~ dunif(0, 100)
+}
+'
+```
+
+## JAGS code for an ARIMAX model (shortened)
+
+\small 
+```{r, eval=FALSE}
+model_code = '
+model
+{
+  ...
+  # Likelihood
+  for (t in (max(p,q)+1):N) {
+    z[t] ~ dnorm(alpha + ar_mean[t] + ma_mean[t] + reg_mean[t],
+                  sigma^-2)
+    ma_mean[t] <- inprod(theta, eps[(t-q):(t-1)])
+    ar_mean[t] <- inprod(beta, z[(t-p):(t-1)])
+    reg_mean[t] <- inprod(phi, x[t,])
+    eps[t] <- z[t]-alpha-ar_mean[t]-ma_mean[t]-reg_mean[t]
+  }
+  # Priors
+  ...
+  for(i in 1:k) {
+    phi[i] ~ dnorm(0, 100^-2)
+  }
+  ...
+}
+'
+```
+
+## Fitting a JAGS ARIMA model
+
+- Let's fit an ARIMA(1, 0, 1) model to the wheat data
+
+```{r, message=FALSE, results='hide'}
+wheat = read.csv('../../data/wheat.csv')
+jags_data = with(wheat,
+                 list(N = length(wheat) - 1,
+                      z = scale(wheat)[,1],
+                      q = 1,
+                      p = 1))
+jags_run = jags(data = jags_data,
+                parameters.to.save = c('alpha',
+                                       'theta',
+                                       'beta',
+                                       'sigma'),
+                model.file = textConnection(model_code))
+```
+
+## Checking output
+
+\tiny
+```{r}
+print(jags_run)
+```
+
+## Checking model fit
+
+- We have covered how to compare fits in models by comparing e.g. AIC or running cross-validation
+- An extra way available via JAGS or Stan is to simulate from the posterior distribution of the parameters, and subsequently simulate from the likelihood to see if the these data match the real data we observed
+- This is known as a _posterior predictive check_ 
+
+
+## Posterior predictive distribution in JAGS
+
+- The easiest way is to put an extra line in the JAGS code, e.g. AR(1):
+\small
+```{r}
+jags_code = '
+model {
+  # Likelihood
+  for (t in 2:N) {
+    y[t] ~ dnorm(alpha + beta * y[t-1], sigma^-2)
+    y_pred[t] ~ dnorm(alpha + beta * y[t-1], sigma^-2)
+  }
+
+  # Priors
+  alpha ~ dnorm(0, 100^-2)
+  beta ~ dunif(-1, 1)
+  sigma ~ dunif(0, 100)
+}
+'
+```
+
+## Posterior predictive outputs
+
+```{r, include = FALSE, results = 'hide', message=FALSE, fig.height = 4}
+sheep = read.csv('../../data/sheep.csv')
+jags_run = jags(data = list(N = nrow(sheep), 
+                            y = sheep$sheep),
+                parameters.to.save = c('y_pred'),
+                model.file = textConnection(jags_code))
+```
+```{r}
+pars = jags_run$BUGSoutput$sims.list$y_pred
+plot(sheep$sheep[2:nrow(sheep)], apply(pars,2,'mean'))
+abline(a=0, b = 1, col = 'red')
+```
+
+## Creating predictions inside the JAGS model
+
+- The posterior predictive check for a time series model is really just a check of the one step ahead predictions. However, posterior predictive checks are useful for all models, and are even more informative in complex models
+
+- We could create the one-step ahead predictions outside JAGS in R code, but it's usually easier to do it inside the code itself
+
+- We don't have to stop at one step ahead predictions, we can move on to 2 step ahead or further. We would expect the performance of the models to deteriorate the further ahead we predict
+
+## Two step-head predictions for an AR(1) model
+
+\small
+
+```{r}
+jags_code = '
+model {
+  # Likelihood
+  for (t in 2:N) {
+    y[t] ~ dnorm(alpha + beta * y[t-1], sigma^-2)
+    y_one_ahead[t] ~ dnorm(alpha + beta * y[t-1], 
+      sigma^-2)
+  }
+  for (t in 3:N) {
+    y_two_ahead[t] ~ dnorm(alpha + beta * y_one_ahead[t-1],
+      sigma^-2)
+  }
+
+  # Priors
+  alpha ~ dnorm(0, 100^-2)
+  beta ~ dunif(-1, 1)
+  sigma ~ dunif(0, 100)
+}
+'
+```
+
+## Output
+
+\small 
+```{r, include = FALSE, results = 'hide', message=FALSE}
+jags_run = jags(data = list(N = nrow(sheep), 
+                            y = sheep$sheep),
+                parameters.to.save = c('y_one_ahead',
+                                       'y_two_ahead'),
+                model.file = textConnection(jags_code))
+```
+```{r, fig.height = 4}
+one_ahead = jags_run$BUGSoutput$sims.list$y_one_ahead
+two_ahead = jags_run$BUGSoutput$sims.list$y_two_ahead
+plot(sheep$sheep[2:nrow(sheep)], apply(one_ahead,2,'mean'))
+points(sheep$sheep[3:nrow(sheep)], apply(two_ahead,2,'mean'), 
+       col = 'blue', pch = 19)
+abline(a=0, b = 1, col = 'red')
+```
+
+## JAGS and the NA trick
+
+- What if we want to create a single set of longer predictions at the end of the data set?
+
+- So far we have been giving JAGS the data in a list. It looks up these objects in the `model_code` file and treats all the others as parameters to be estimated
+
+- If you set some of the values in your data list to the value `NA` (R's missing value placeholder) JAGS will treat these missing data as _parameters to be estimated_
+
+- This is especially useful for time series as we can create extra `NA` y values at the end of our series, and JAGS will magically turn these into future forecasts
+
+## The NA trick in action
+
+Start with a simple AR(1) model
+```{r}
+model_code = '
+model
+{
+  # Likelihood
+  for (t in 2:N) {
+    y[t] ~ dnorm(alpha + beta * y[t-1], sigma^-2)
+  }
+  # Priors
+  alpha ~ dnorm(0, 100^-2)
+  beta ~ dunif(-1, 1)
+  sigma ~ dunif(0, 100)
+}
+'
+```
+
+## The NA trick in action (cont)
+
+```{r, results = 'hide', message=FALSE}
+num_forecasts = 10 # 10 extra years
+jags_run = jags(data = list(N = nrow(sheep) + 
+                                  num_forecasts, 
+                            y = c(sheep$sheep, 
+                                  rep(NA, 
+                                      num_forecasts))),
+                parameters.to.save = 'y',
+                model.file=textConnection(model_code))
+```
+
+## NA trick plots
+
+```{r, fig.height = 6}
+y_pred = jags_run$BUGSoutput$sims.list$y
+y_med = apply(y_pred,2,'median')
+plot(c(sheep$year,2008:2017),y_med,type='l')
+```
+
+## Notes about the NA trick
+
+- Here I've just plotted the mean forecasts, but we have the full posterior distribution so it's easy to create lower and upper credible intervals if required
+
+```{r}
+apply(y_pred,2,'quantile', c(0.05, 0.95))[,48:57]
+```
+
+- The `NA` trick is fantastically in all kinds of modelling situations, e.g. where we have genuinely missing data.
+
+## Choosing different models: DIC
+
+- So far we have met a wide array of discrete-time time series models, all of which involve choosing a $p$ (AR component), a $q$ (MA component), and a $d$ (differencing component)
+
+- We need a principled method to choose the best values of these. It will always be the case that increasing these values will lead to a better fit
+
+- There are several proposed methods for doing this:
+
+    1. Treat the model as another parameter (Bayes factors and reversible jump)
+    2. Remove some of the data and predict the left out data (Cross-validation)
+    3. Use statistical theory to penalise the fit of the model (Information Criteria)
+
+- All of these are good and useful, but number 3 is implemented by JAGS for us to use through the DIC
+
+## The Deviance Information Criterion
+
+- As JAGS is running through the iterations, it is constantly calculating the value of the likelihood, the probability of the data given the parameters. JAGS reports this as the _deviance_ which is -2 times the log of the likelihood
+
+- For a good set of parameters the value of the deviance should be high, and the model once converged should reach a stable value of the deviance
+
+- If you run the model with, e.g. an extra AR term, you'd find that the deviance (once the model had converged) would be slightly higher 
+- The idea behind _information criteria_, as we have seen, is to penalise the deviance by a measure of the complexity of the model
+
+## Measuring model complexity
+
+- Measuring model complexity isn't quite so simple in the Bayesian world as the number of parameters, in the presence of prior information, can be hard to estimate
+
+- The version JAGS uses is known as the Deviance Information Criterion (DIC) and is built specifically to penalise the deviance by the _effective_ number of parameters, which it calls $p_D$
+
+## The components of DIC 
+
+- JAGS provides the DIC whenever we call the `print` command on a model run
+```{r, eval=FALSE}
+DIC info (using the rule, pD = var(deviance)/2)
+pD = 6.9 and DIC = -261.1
+```
+- Here $p_D$ estimates the effective number of parameters in the model and the DIC is calculated as the deviance plus the $p_D$ value
+
+- The usual practice is to run models of differing complexity (e.g. with differing values of $p$, $d$, and $q$) and choose the model with the lowest DIC
+
+## Summary
+
+- We have seen some JAGS code for some of the more complicated models we have met
+- We have fitted them to some of the data sets we have met
+- We know how to create one step ahead (or more) forecasts for a JAGS model
