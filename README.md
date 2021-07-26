@@ -28,4 +28,4 @@ Participants should have :
 
 Please install the software required for running the code [here]().
 
-You can start browsing the course by visiting the [timetable](https://andrewcparnell.github.io/introTSA/index.html)
+You can start browsing the course by visiting the [timetable](https://andrewcparnell.github.io/IntroTSA/)
