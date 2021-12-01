@@ -13,11 +13,11 @@ Please note that the course will be recorded so please turn off video if you do 
 
 Time  | Class
 ------------- | ----------------------------------------------------
-8:30-9:30 | Introduction, example data sets [(slides)]() [(handout)]()
+8:30-9:30 | Introduction, example data sets [(slides)](https://andrewcparnell.github.io/introTSA/slides/class_1_intro.pdf)
 9:30-9:45 | Coffee break
-9:45-10:45 | Revision: likelihood and inference [(slides)]() [(handout)]()
+9:45-10:45 | Revision: likelihood and inference [(slides)]()
 10:45-11:00 | Break 
-11:00-12:00 | Revision: linear regression and GLMs [(slides)]() [(handout)]()
+11:00-12:00 | Revision: linear regression and GLMs [(slides)]()
 12:00-13:00 | Lunch
 13:00-14:30 | Tutor-guided practical: Loading data in R and running simple analysis [(code)]()
 14:30-15:00 | Coffee break
@@ -27,11 +27,11 @@ Time  | Class
 
 Time  | Class
 ------------- | ----------------------------------------------------
-8:30-9:30 | Auto-regressive models and random walks [(slides)]() [(handout)]()
+8:30-9:30 | Auto-regressive models and random walks [(slides)]()
 9:30-9:45 | Coffee break
-9:45-10:45 | Moving averages and ARMA [(slides)]() [(handout)]()
+9:45-10:45 | Moving averages and ARMA [(slides)]()
 10:45-11:00 | Break 
-11:00-12:00 | Integrated models and ARIMA [(slides)]() [(handout)]()
+11:00-12:00 | Integrated models and ARIMA [(slides)]()
 12:00-13:00 | Lunch
 13:00-14:30 | Tutor-guided practical: the `forecast` package in R [(code)]()
 14:30-15:00 | Coffee break
@@ -41,11 +41,11 @@ Time  | Class
 
 Time  | Class
 ------------- | ----------------------------------------------------
-8:30-9:30 | Including covariates: ARIMAX models [(slides)]() [(handout)]()
+8:30-9:30 | Including covariates: ARIMAX models [(slides)]()
 9:30-9:45 | Coffee break
-9:45-10:45 | Creating bespoke time series models using Bayes [(slides)]() [(handout)]()
+9:45-10:45 | Creating bespoke time series models using Bayes [(slides)]()
 10:45-11:00 | Break 
-11:00-12:00 | Model choice and forecasting using Bayes [(slides)]() [(handout)]()
+11:00-12:00 | Model choice and forecasting using Bayes [(slides)]()
 12:00-13:00 | Lunch
 13:00-14:30 | Tutor-guided practical: a walkthrough example time series analysis [(code)]()
 14:30-15:00 | Coffee break
@@ -55,11 +55,11 @@ Time  | Class
 
 Time  | Class
 ------------- | ----------------------------------------------------
-8:30-9:30 | Modelling with seasonality and the frequency domain [(slides)]() [(handout)]()
+8:30-9:30 | Modelling with seasonality and the frequency domain [(slides)]() 
 9:30-9:45 | Coffee break
-9:45-10:45 | Stochastic volatility models and heteroskedasticity [(slides)]() [(handout)]()
+9:45-10:45 | Stochastic volatility models and heteroskedasticity [(slides)]()
 10:45-11:00 | Break 
-11:00-12:00 | Fitting Bayesian time series models [(slides)]() [(handout)]()
+11:00-12:00 | Fitting Bayesian time series models [(slides)]()
 12:00-13:00 | Lunch
 13:00-14:30 | Tutor-guided practical (John): fitting time series models in JAGS and Stan [(code)]()
 14:30-15:00 | Coffee break
@@ -69,10 +69,10 @@ Time  | Class
 
 Time  | Class
 ------------- | ----------------------------------------------------
-8:30-9:30 | Models for continuous time series: Brownian Motion and Ornstien Uhlenbeck processes [(slides)]() [(handout)]()
+8:30-9:30 | Models for continuous time series: Brownian Motion and Ornstien Uhlenbeck processes [(slides)]()
 9:30-9:45 | Coffee break
-9:45-10:45 | State-space and change point models [(slides)]() [(handout)]()
+9:45-10:45 | State-space and change point models [(slides)]()
 10:45-11:00 | Break 
-11:00-12:00 | Multivariate time series models, Splines, and Gaussian processes [(slides)]() [(handout)]()
+11:00-12:00 | Multivariate time series models, Splines, and Gaussian processes [(slides)]()
 12:00-13:00 | Lunch
 13:00-16:30 | Open session: analyse your own data set 
