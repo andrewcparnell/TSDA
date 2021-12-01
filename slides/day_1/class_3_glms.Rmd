@@ -1,15 +1,19 @@
 ---
 title: 'Class 3: Linear Regression and GLMs'
-author: Andrew Parnell\newline \texttt{andrew.parnell@ucd.ie} \newline \vspace{1cm}
-  \newline \includegraphics[width=1cm]{../UCDlogo.pdf}
+author: Andrew Parnell \newline \texttt{andrew.parnell@mu.ie}   \newline \vspace{1cm}
+  \newline \includegraphics[width=3cm]{../maynooth_uni_logo.jpg}
+  \newline \vspace{1cm}
+  https://andrewcparnell.github.io/bhm_course 
+  \newline PRESS RECORD 
 output:
   beamer_presentation:
     includes:
       in_header: ../header.tex
+classoption: "aspectratio=169"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(dev = 'pdf')
+knitr::opts_chunk$set(dev = 'pdf', fig.height = 5)
 options(width = 40)
 par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
 setwd("~/GitHub/ecots/slides/day_1")
@@ -115,7 +119,7 @@ predict(my_model, newdata = data.frame(x = 2050))
 ## Residual plot
 
 - Common to plot a histogram of the residuals, and a scatter plot of the residuals vs the fits
-```{r, fig.height = 5}
+```{r, fig.height = 4}
 par(mfrow=c(1, 2))
 hist(my_model$residuals)
 plot(my_model$fitted.values, my_model$residuals)
@@ -152,14 +156,14 @@ head(whitefly, 4)
 
 ## Plotting the whitefly data
 
-```{r, fig.height = 6}
+```{r, fig.height = 4}
 barplot(table(whitefly$live))
 ```
 - Doesn't really show the whole story as we're ignoring the total
 
 ## Second go
 
-```{r, fig.height = 6}
+```{r, fig.height = 4}
 hist(whitefly$live/whitefly$n, breaks = 30)
 ```
 - Better, but actually there is also a covariate in the number of immature whitefly that were included (variable `imm`)
@@ -237,7 +241,7 @@ sum(dbinom(y, n, inv.logit(alpha + beta * x), log = TRUE))
 
 - Suppose under this method we got maximum likelihood estimates of $\hat{\alpha} = -2$ and $\hat{\beta} = 0.05$
 - A plot of the fitted values is now:
-```{r, fig.height = 5}
+```{r, fig.height = 4}
 alpha = -2
 beta = 0.05
 plot(x, y/n)

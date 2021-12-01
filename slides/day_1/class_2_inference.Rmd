@@ -1,15 +1,19 @@
 ---
 title: 'Class 2: Likelihood and Inference'
-author: Andrew Parnell\newline \texttt{andrew.parnell@ucd.ie} \newline \vspace{1cm}
-  \newline \includegraphics[width=1cm]{../UCDlogo.pdf}
+author: Andrew Parnell \newline \texttt{andrew.parnell@mu.ie}   \newline \vspace{1cm}
+  \newline \includegraphics[width=3cm]{../maynooth_uni_logo.jpg}
+  \newline \vspace{1cm}
+  https://andrewcparnell.github.io/bhm_course 
+  \newline PRESS RECORD 
 output:
   beamer_presentation:
     includes:
       in_header: ../header.tex
+classoption: "aspectratio=169"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(dev = 'pdf')
+knitr::opts_chunk$set(dev = 'pdf', fig.height = 5)
 options(width = 40)
 par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
 setwd("~/GitHub/ecots/slides/day_1")
@@ -189,7 +193,7 @@ sum(dnorm(x, mean = 0, sd = 1, log = TRUE))
 
 ## A QQ-plot
 
-```{r, fig.height = 6}
+```{r}
 qqnorm(x)
 qqline(x)
 ```

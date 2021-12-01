@@ -13,15 +13,15 @@ Please note that the course will be recorded so please turn off video if you do 
 
 Time  | Class
 ------------- | ----------------------------------------------------
-8:30-9:30 | Introduction, example data sets [(slides)](https://andrewcparnell.github.io/introTSA/slides/class_1_intro.pdf)
+8:30-9:30 | Introduction, example data sets [(slides)](https://andrewcparnell.github.io/introTSA/slides/day_1/class_1_intro.pdf)
 9:30-9:45 | Coffee break
-9:45-10:45 | Revision: likelihood and inference [(slides)]()
+9:45-10:45 | Revision: likelihood and inference [(slides)](https://andrewcparnell.github.io/introTSA/slides/day_1/class_2_inference.pdf)
 10:45-11:00 | Break 
-11:00-12:00 | Revision: linear regression and GLMs [(slides)]()
+11:00-12:00 | Revision: linear regression and GLMs [(slides)](https://andrewcparnell.github.io/introTSA/slides/day_1/class_3_glms.pdf)
 12:00-13:00 | Lunch
-13:00-14:30 | Tutor-guided practical: Loading data in R and running simple analysis [(code)]()
+13:00-14:30 | Tutor-guided practical: Loading data in R and running simple analysis [(code)](https://andrewcparnell.github.io/introTSA/practicals/tutor_1_R_basics.R)
 14:30-15:00 | Coffee break
-15:00-16:30 | Self-guided practical: Using R for linear regression and GLMs' [(worksheet)]() [(answer code)]()
+15:00-16:30 | Self-guided practical: Using R for linear regression and GLMs' [(worksheet)](https://andrewcparnell.github.io/introTSA/practicals/prac_1_example_data.pdf) [(answer code)](https://andrewcparnell.github.io/introTSA/practicals/prac_1_answers.R)
 
 ## Day 2
 
