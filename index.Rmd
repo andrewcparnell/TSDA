@@ -5,7 +5,7 @@ date: "December 2021 - online version"
 output: html_document
 ---
 
-Module pre-requisites can be found [here](https://andrewcparnell.github.io/introTSA/prerequisites.html). Please install these when you have 10 spare minutes. All the raw files and code can be found [here](https://www.github.com/andrewcparnell/introTSA) (click 'Code > Download ZIP' near the top right if you want offline versions of everything). All links below are in pdf format for you to annotate. 
+Module pre-requisites can be found [here](https://andrewcparnell.github.io/introTSA/prerequisites.html). Please install these when you have a few spare minutes. All the raw files and code can be found [here](https://www.github.com/andrewcparnell/introTSA) (click 'Code > Download ZIP' near the top right if you want offline versions of everything). All links below are in pdf format for you to annotate. 
 
 Please note that the course will be recorded so please turn off video if you do not wish to be shown on the recordings. 
 

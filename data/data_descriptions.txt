@@ -1,0 +1,18 @@
+Ecological Times Series Course (ecots) - data sets
+
+CO2.csv is the monthly CO2 measurements from Hawaii. The three columns are year, month, and CO2 value in parts per million. The Data come from NOAA
+
+lynx.csv is the annual lynx trapping numbers from 1821–1934 in Canada. This is available as a default data set in R and is included here only for completeness
+
+sheep.csv is annual sheep production in Asia from 1961 to 2007. From United Nations. http://data.is/GFxwQi
+
+wheat.csv is annual Canadian wheat yield (tonnes) from 1961 to 2013. From http://ref.data.fao.org
+
+geese_isotopes.csv contains a bivariate time series in irregular time of geese stable isotope values (d15N and d13C) together with some extra covariates (adult - yes=1 or no=0,
+male)
+
+forest_fires.csv contains the number of acres burned in forest fires in Canada from 1918-1988. Comes from Hipel and McLeod (1994) via the Time Series Data Library. (Hyn­d­man, R.J. “Time Series Data Library”, http://data.is/TSDLdemo)
+
+nile_flow.csv contains the mean annual Nile flow, 1871 – 1970. Comes from Hipel and McLeod (1994) via the Time Series Data Library. (Hyn­d­man, R.J. “Time Series Data Library”, http://data.is/TSDLdemo)
+
+horseshoe.csv contains data from a study (Brockman, Ethology, 1996) on nesting horseshoe crabs. The response variable is satell: the number of satellites (other males residing nearby). The covariates are the female crabs colour (color; 1 = light medium, 2 = medium, 3 = dark medium, 4 = dark), spine condition (1 = both good, 2 = one worn or broken, 3 = both worn or broken), widch (cm), and weight (kg) 

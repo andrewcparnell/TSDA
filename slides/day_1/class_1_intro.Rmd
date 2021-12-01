@@ -1,11 +1,15 @@
 ---
-title: 'Class 1: Time Series Models for Ecologists'
-author: Andrew Parnell with Emma Howard and John O'Sullivan\newline \texttt{andrew.parnell@ucd.ie} \newline \vspace{1cm}
-  \newline \includegraphics[width=1cm]{../UCDlogo.pdf}
+title: 'Class 1: Introduction to Time Series Models'
+author: Andrew Parnell \newline \texttt{andrew.parnell@mu.ie}   \newline \vspace{1cm}
+  \newline \includegraphics[width=3cm]{../maynooth_uni_logo.jpg}
+  \newline \vspace{1cm}
+  https://andrewcparnell.github.io/bhm_course 
+  \newline PRESS RECORD 
 output:
   beamer_presentation:
     includes:
       in_header: ../header.tex
+classoption: "aspectratio=169"
 ---
 
 ```{r setup, include=FALSE}
@@ -24,7 +28,7 @@ lapply(pkgs, library, character.only = TRUE)
 
 ## How this course works
 
-- This course lives on GitHub, at [github.com/andrewcparnell/ecots](www.github.com/andrewcparnell/ecots) which means anyone can see the slides, code, etc, and make comments on it
+- This course lives on GitHub, at [github.com/andrewcparnell/ecots](www.github.com/andrewcparnell/introTSA) which means anyone can see the slides, code, etc, and make comments on it
 - The timetable html document provides links to all the pdf slides, handouts, data and practicals
 - Let me know if you spot mistakes, as these can be easily updated on the GitHub page
 - There is an issues page if you want to ask questions
@@ -39,7 +43,7 @@ lapply(pkgs, library, character.only = TRUE)
 
 - Many of the slides contain R code and output (some of which may be hidden in the `.Rmd` file)
 - An example:
-```{r, fig.height = 5}
+```{r, fig.height = 4}
 lynx = read.csv(file = '../../data/lynx.csv')
 with(lynx, plot(year, number, type = 'l'))
 ```
@@ -55,7 +59,7 @@ with(lynx, plot(year, number, type = 'l'))
     - _Bayesian Methods for Ecology_. by McCarthy
     - _Bayesian Data Analysis_ by Gelman et al
 
-- Looking for data? Try: https://datamarket.com/data/list/?q=provider:tsdl 
+- Looking for data? Try the `tsdl` R package
 - (see also sources in Practical 3)
 
 ## What is a time series?
@@ -143,7 +147,7 @@ with(geese, plot(date, d13CPl,
 
 ## Data set 5: Geese isotopes again 
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.height = 5}
 o = order(geese$julianday)
 with(geese, plot(julianday[o], d13CPl[o],
                                   ylab = 'd13C',
@@ -152,7 +156,7 @@ with(geese, plot(julianday[o], d13CPl[o],
 
 ## Data set 6: Oxygen isotopes in ice
 
-```{r, echo = FALSE, fig.height = 5}
+```{r, echo = FALSE, fig.height = 4}
 ice = read.csv('../../data/GISP2_20yr.csv')
 with(ice, plot(Age, Del.18O, type = 'l', ylab = 'd18O'))
 ```

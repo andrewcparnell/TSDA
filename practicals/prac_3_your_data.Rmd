@@ -24,7 +24,7 @@ lapply(pkgs, library, character.only = TRUE)
 By now you've seen pretty much everything that the `forecast` package has to offer, and a little bit of the Bayesian models too. This should give you just enough information to get started on your own data set. However, if you still haven't seen anything that looks like your data yet, try analysing one of the example data sets in the `data` folder, or go online and find a good data set. There are lots of good sites, including:
 
 - The R `datasets` library. Just type `library(help = "datasets")`
-- The [Time Series Data Library](https://datamarket.com/data/list/?q=provider:tsdl) hosted on datamarket.com
+- The [Time Series Data Library](https://pkg.yangzhuoranyang.com/tsdl/articles/tsdl.html)
 - Some of the forecasting competition sites, such as [Kaggle](https://www.kaggle.com/), [CrowdAnalytix](https://www.crowdanalytix.com/), and [TunEdit](http://tunedit.org/)
 
 ## Tasks
@@ -38,4 +38,4 @@ You know the drill by now! Take your data set and:
 1. Check the residuals
 1. Predict the future!
 
-We are always happy to help so feel free to grab us for advice
+If you get stuck please ask for help.
