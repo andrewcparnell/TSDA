@@ -1,20 +1,24 @@
 ---
 title: 'Class 1: Including covariates: ARIMAX models'
-author: Andrew Parnell \newline \texttt{andrew.parnell@ucd.ie} \newline \vspace{1cm}
-  \newline \includegraphics[width=1cm]{../UCDlogo.pdf}
+author: Andrew Parnell \newline \texttt{andrew.parnell@mu.ie}   \newline \vspace{1cm}
+  \newline \includegraphics[width=3cm]{../maynooth_uni_logo.jpg}
+  \newline \vspace{1cm}
+  https://andrewcparnell.github.io/IntroTSA/
+  \newline PRESS RECORD 
 output:
   beamer_presentation:
     includes:
       in_header: ../header.tex
+classoption: "aspectratio=169"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(dev = 'pdf')
+knitr::opts_chunk$set(dev = 'pdf', fig.height = 5)
 par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
-#setwd("~/GitHub/ecots/slides/day_3")
-options(width = 50)
 pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast', 'rstan')
 lapply(pkgs, library, character.only = TRUE)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
 ```
 
 ## Learning outcomes
@@ -58,7 +62,7 @@ plot(wheat$year, wheat$wheat, type = 'l')
 
 ## ACF/PACF plots
 
-```{r, fig.height = 6}
+```{r, fig.height = 4}
 par(mfrow = c(1, 2))
 acf(wheat$wheat)
 pacf(wheat$wheat)
@@ -77,7 +81,7 @@ Arima(wheat$wheat, order = c(1, 1, 1))$aic
 
 ## Checking the residuals
 
-```{r, fig.height =5}
+```{r, fig.height = 4}
 my_model_ARIMAX111 = Arima(wheat$wheat, 
                            order = c(1, 1, 1),
                            xreg = wheat$year)

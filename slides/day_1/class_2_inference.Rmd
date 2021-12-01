@@ -3,7 +3,7 @@ title: 'Class 2: Likelihood and Inference'
 author: Andrew Parnell \newline \texttt{andrew.parnell@mu.ie}   \newline \vspace{1cm}
   \newline \includegraphics[width=3cm]{../maynooth_uni_logo.jpg}
   \newline \vspace{1cm}
-  https://andrewcparnell.github.io/bhm_course 
+  https://andrewcparnell.github.io/IntroTSA/
   \newline PRESS RECORD 
 output:
   beamer_presentation:
@@ -16,7 +16,6 @@ classoption: "aspectratio=169"
 knitr::opts_chunk$set(dev = 'pdf', fig.height = 5)
 options(width = 40)
 par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
-setwd("~/GitHub/ecots/slides/day_1")
 pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast', 'rstan')
 lapply(pkgs, library, character.only = TRUE)
 ```
