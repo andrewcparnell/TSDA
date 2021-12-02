@@ -14,66 +14,66 @@ Please note that the course will be recorded so please turn off video if you do 
 
 Time  | Class
 ------------- | ----------------------------------------------------
-8:30-9:30 | Introduction, example data sets [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_1/class_1_intro.pdf)
-9:30-9:45 | Coffee break
-9:45-10:45 | Revision: likelihood and inference [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_1/class_2_inference.pdf)
-10:45-11:00 | Break 
-11:00-12:00 | Revision: linear regression and GLMs [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_1/class_3_glms.pdf)
-12:00-13:00 | Lunch
-13:00-14:30 | Tutor-guided practical: Loading data in R and running simple analysis [(code)](https://andrewcparnell.github.io/IntroTSA/practicals/tutor_1_R_basics.R)
-14:30-15:00 | Coffee break
-15:00-16:30 | Self-guided practical: Using R for linear regression and GLMs' [(worksheet)](https://andrewcparnell.github.io/IntroTSA/practicals/prac_1_example_data.pdf) [(answer code)](https://andrewcparnell.github.io/IntroTSA/practicals/prac_1_answers.R)
+9:30-10:30 | Introduction, example data sets [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_1/class_1_intro.pdf)
+10:30-10:45 | Coffee break
+10:45-11:45 | Revision: likelihood and inference [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_1/class_2_inference.pdf)
+11:45-12:00 | Break 
+12:00-13:00 | Revision: linear regression and GLMs [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_1/class_3_glms.pdf)
+13:00-14:00 | Lunch
+14:00-14:45 | Tutor-guided practical: Loading data in R and running simple analysis [(code)](https://andrewcparnell.github.io/IntroTSA/practicals/tutor_1_R_basics.R)
+14:45-15:00 | Coffee break
+15:00-17:00 | Self-guided practical: Using R for linear regression and GLMs' [(worksheet)](https://andrewcparnell.github.io/IntroTSA/practicals/prac_1_example_data.pdf) [(answer code)](https://andrewcparnell.github.io/IntroTSA/practicals/prac_1_answers.R)
 
 ## Day 2
 
 Time  | Class
 ------------- | ----------------------------------------------------
-8:30-9:30 | Auto-regressive models and random walks [(slides)]()
-9:30-9:45 | Coffee break
-9:45-10:45 | Moving averages and ARMA [(slides)]()
-10:45-11:00 | Break 
-11:00-12:00 | Integrated models and ARIMA [(slides)]()
-12:00-13:00 | Lunch
-13:00-14:30 | Tutor-guided practical: the `forecast` package in R [(code)]()
-14:30-15:00 | Coffee break
-15:00-16:30 | Self-guided practical: Fitting ARIMA models with `forecast` [(worksheet)]() [(answer code)]()
+9:30-10:30 | Auto-regressive models and random walks [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_2/class_1_AR.pdf)
+10:30-10:45 | Coffee break
+10:45-11:45 | Moving averages and ARMA [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_2/class_2_ARMA.pdf)
+11:45-12:00 | Break 
+12:00-13:00 | Integrated models and ARIMA [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_2/class_3_ARIMA.pdf)
+13:00-14:00 | Lunch
+14:00-14:45 | Tutor-guided practical: the `forecast` package in R [(code)]()
+14:45-15:00 | Coffee break
+15:00-17:00 | Self-guided practical: Fitting ARIMA models with `forecast` [(worksheet)]() [(answer code)]()
 
 ## Day 3
 
 Time  | Class
 ------------- | ----------------------------------------------------
-8:30-9:30 | Including covariates: ARIMAX models [(slides)]()
-9:30-9:45 | Coffee break
-9:45-10:45 | Creating bespoke time series models using Bayes [(slides)]()
-10:45-11:00 | Break 
-11:00-12:00 | Model choice and forecasting using Bayes [(slides)]()
-12:00-13:00 | Lunch
-13:00-14:30 | Tutor-guided practical: a walkthrough example time series analysis [(code)]()
-14:30-15:00 | Coffee break
-15:00-16:30 | Self-guided practical: finding the best time series model for your data set [(worksheet)]()
+9:30-10:30 | Including covariates: ARIMAX models [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_3/class_1_ARIMAX.pdf)
+10:30-10:45 | Coffee break
+10:45-11:45 | Creating bespoke time series models using Bayes [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_3/class_2_Bayes.pdf)
+11:45-12:00 | Break 
+12:00-13:00 | Model choice and forecasting using Bayes [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_3/class_3_model_choice.pdf)
+13:00-14:00 | Lunch
+14:00-14:45 | Tutor-guided practical: a walkthrough example time series analysis [(code)]()
+14:45-15:00 | Coffee break
+15:00-17:00 | Self-guided practical: finding the best time series model for your data set [(worksheet)]()
 
 ## Day 4
 
 Time  | Class
 ------------- | ----------------------------------------------------
-8:30-9:30 | Modelling with seasonality and the frequency domain [(slides)]() 
-9:30-9:45 | Coffee break
-9:45-10:45 | Stochastic volatility models and heteroskedasticity [(slides)]()
-10:45-11:00 | Break 
-11:00-12:00 | Fitting Bayesian time series models [(slides)]()
-12:00-13:00 | Lunch
-13:00-14:30 | Tutor-guided practical (John): fitting time series models in JAGS and Stan [(code)]()
-14:30-15:00 | Coffee break
-15:00-16:30 | Self-guided practical: start analysing your own data set with Bayes [(worksheet)]()
+9:30-10:30 | Modelling with seasonality and the frequency domain [(slides)]() 
+10:30-10:45 | Coffee break
+10:45-11:45 | Stochastic volatility models and heteroskedasticity [(slides)]()
+11:45-12:00 | Break 
+12:00-13:00 | Fitting Bayesian time series models [(slides)]()
+13:00-14:00 | Lunch
+14:00-14:45 | Tutor-guided practical: fitting time series models in JAGS and Stan [(code)]()
+14:45-15:00 | Coffee break
+15:00-17:00 | Self-guided practical: start analysing your own data set with Bayes [(worksheet)]()
 
 ## Day 5
 
 Time  | Class
 ------------- | ----------------------------------------------------
-8:30-9:30 | Models for continuous time series: Brownian Motion and Ornstien Uhlenbeck processes [(slides)]()
-9:30-9:45 | Coffee break
-9:45-10:45 | State-space and change point models [(slides)]()
-10:45-11:00 | Break 
-11:00-12:00 | Multivariate time series models, Splines, and Gaussian processes [(slides)]()
-12:00-13:00 | Lunch
+9:30-10:30 | Models for continuous time series: Brownian Motion and Ornstien Uhlenbeck processes [(slides)]()
+10:30-10:45 | Coffee break
+10:45-11:45 | State-space and change point models [(slides)]()
+11:45-12:00 | Break 
+12:00-13:00 | Multivariate time series models, Splines, and Gaussian processes [(slides)]()
+13:00-14:00 | Lunch
 13:00-16:30 | Open session: analyse your own data set 
