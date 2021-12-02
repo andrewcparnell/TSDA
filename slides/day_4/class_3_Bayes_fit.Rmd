@@ -1,23 +1,22 @@
 ---
 title: 'Class 3: Fitting Bayesian time series models'
-author: Andrew Parnell \newline \texttt{andrew.parnell@ucd.ie} \newline \vspace{1cm}
-  \newline \includegraphics[width=1cm]{../UCDlogo.pdf}
+author: Andrew Parnell \newline \texttt{andrew.parnell@mu.ie}   \newline \vspace{1cm}
+  \newline \includegraphics[width=3cm]{../maynooth_uni_logo.jpg}
+  \newline \vspace{1cm}
+  https://andrewcparnell.github.io/IntroTSA/
+  \newline PRESS RECORD 
 output:
   beamer_presentation:
     includes:
       in_header: ../header.tex
+classoption: "aspectratio=169"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(dev = 'pdf')
+knitr::opts_chunk$set(dev = 'pdf', fig.height = 5)
 par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
-setwd("~/GitHub/ecots/slides/day_4")
-#setwd('/Volumes/MacintoshHD2/GitHub/ecots/slides/day_4/')
-options(width = 50)
-pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast', 'rstan')
+pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast')
 lapply(pkgs, library, character.only = TRUE)
-rstan_options(auto_write = TRUE)
-options(mc.cores = parallel::detectCores())
 ```
 
 ## Learning outcomes

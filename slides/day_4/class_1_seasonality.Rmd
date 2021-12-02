@@ -1,20 +1,21 @@
 ---
 title: 'Class 1: Modelling with seasonality and the frequency domain'
-author: Andrew Parnell \newline \texttt{andrew.parnell@ucd.ie} \newline \vspace{1cm}
-  \newline \includegraphics[width=1cm]{../UCDlogo.pdf}
+author: Andrew Parnell \newline \texttt{andrew.parnell@mu.ie}   \newline \vspace{1cm}
+  \newline \includegraphics[width=3cm]{../maynooth_uni_logo.jpg}
+  \newline \vspace{1cm}
+  https://andrewcparnell.github.io/IntroTSA/
+  \newline PRESS RECORD 
 output:
   beamer_presentation:
     includes:
       in_header: ../header.tex
+classoption: "aspectratio=169"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(dev = 'pdf')
+knitr::opts_chunk$set(dev = 'pdf', fig.height = 5)
 par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
-setwd("~/GitHub/ecots/slides/day_4")
-#setwd('/Volumes/MacintoshHD2/GitHub/ecots/slides/day_4/')
-options(width = 50)
-pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast', 'rstan')
+pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast')
 lapply(pkgs, library, character.only = TRUE)
 ```
 
@@ -51,7 +52,7 @@ with(CO2_1990, plot(date, CO2_ppm, type = 'l',
 
 ## ACF and PACF
 
-```{r, fig.height = 6}
+```{r}
 par(mfrow = c(1, 2))
 acf(CO2_1990$CO2_ppm)
 pacf(CO2_1990$CO2_ppm)
@@ -70,7 +71,7 @@ lm(CO2_ppm ~ year + mfac, data = CO2_1990)
 
 ## Forecasts
 
-```{r, fig.height = 6}
+```{r, fig.height = 4}
 CO2_ts = ts(CO2_1990$CO2_ppm, frequency = 12, 
             start = c(1990, 1))
 s_model_1 = tslm(CO2_ts ~ trend + season)
@@ -94,14 +95,14 @@ $$y_t = \alpha + \beta_t \mbox{year}_t + \gamma_{1} \mbox{Feb}_t + \gamma_{2} \m
 
 - We can alternatively create a seasonal difference by differencing every e.g. 12th observation
 
-```{r, fig.height = 5}
+```{r, fig.height = 4}
 CO2_diff = diff(CO2_1990$CO2_ppm, lag = 12)
 plot(CO2_diff, type = 'l')
 ```
 
 ## Differenced acf and pacf
 
-```{r, fig.height = 6}
+```{r}
 par(mfrow = c(1, 2))
 acf(CO2_diff, na.action = na.pass)
 pacf(CO2_diff, na.action = na.pass)
@@ -147,7 +148,7 @@ auto.arima(CO2_1990_ts)
 
 ## Plotting forecasts
 
-```{r, fig.height = 6}
+```{r}
 s_model_3 = auto.arima(CO2_1990_ts)
 plot(forecast(s_model_3, h = 24))
 ```
@@ -286,7 +287,7 @@ for (k in 1:K) {
 
 ## Plotting the periodogram
 
-```{r, fig.height = 6}
+```{r, fig.height = 4}
 par(mfrow = c(2, 1))
 plot(lynx, type = 'l')
 plot(f, Power, type='l')
