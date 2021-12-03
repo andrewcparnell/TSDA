@@ -1,23 +1,25 @@
 ---
 title: 'Class 3: Multivariate time series models, Splines, and Gaussian processes'
-author: Andrew Parnell \newline \texttt{andrew.parnell@ucd.ie} \newline \vspace{1cm}
-  \newline \includegraphics[width=1cm]{../UCDlogo.pdf}
+author: Andrew Parnell \newline \texttt{andrew.parnell@mu.ie}   \newline \vspace{1cm}
+  \newline \includegraphics[width=3cm]{../maynooth_uni_logo.jpg}
+  \newline \vspace{1cm}
+  https://andrewcparnell.github.io/TSDA/
+  \newline PRESS RECORD 
 output:
   beamer_presentation:
     includes:
       in_header: ../header.tex
+classoption: "aspectratio=169"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(dev = 'pdf')
+knitr::opts_chunk$set(dev = 'pdf', fig.height = 5)
+options(width = 40)
 par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
-#setwd("~/GitHub/ecots/slides/day_5")
-#setwd('/Volumes/MacintoshHD2/GitHub/ecots/slides/day_5/')
-options(width = 50)
 pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast', 'rstan')
 lapply(pkgs, library, character.only = TRUE)
-rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
+rstan_options(auto_write = TRUE)
 ```
 
 ## Learning outcomes
@@ -264,37 +266,33 @@ If you think about this, when $x_i$ and $x_j$ are close then you get a value of 
 stan_code = '
 data {
   int<lower=1> N;
-  vector[N] x;
+  real x[N];
   vector[N] y;
 }
 transformed data {
-  vector[N] alpha;
-  for (i in 1:N) alpha[i] = 0;
+  vector[N] mu = rep_vector(0, N);
 }
 parameters {
-  real<lower=0> eta_sq;
-  real<lower=0> inv_rho_sq;
-  real<lower=0> sigma_sq;
+  real<lower=0> rho;
+  real<lower=0> alpha;
+  real<lower=0> sigma;
 }
-transformed parameters {
-  real<lower=0> rho_sq;
-  rho_sq = inv(inv_rho_sq);
-} model {
-  matrix[N, N] Sigma;
-  // off-diagonal elements
-  for (i in 1:(N-1)) {
-    for (j in (i+1):N) {
-      Sigma[i, j] = eta_sq * exp(-rho_sq * pow(x[i] - x[j],2));
-      Sigma[j, i] = Sigma[i, j];
-    } 
-  }
+model {
+  matrix[N, N] L_K;
+  matrix[N, N] K = cov_exp_quad(x, alpha, rho);
+  real sq_sigma = square(sigma);
+
   // diagonal elements
-  for (k in 1:N)
-    Sigma[k, k] = eta_sq + sigma_sq;
-  eta_sq ~ cauchy(0, 5);
-  inv_rho_sq ~ cauchy(0, 5);
-  sigma_sq ~ cauchy(0, 5);
-  y ~ multi_normal(alpha, Sigma);
+  for (n in 1:N)
+    K[n, n] = K[n, n] + sq_sigma;
+
+  L_K = cholesky_decompose(K);
+
+  rho ~ inv_gamma(5, 5);
+  alpha ~ std_normal();
+  sigma ~ std_normal();
+
+  y ~ multi_normal_cholesky(mu, L_K);
 }
 '
 ```
@@ -303,58 +301,55 @@ transformed parameters {
 stan_code = '
 data {
   int<lower=1> N1;
-  vector[N1] x1;
+  real x1[N1];
   vector[N1] y1;
   int<lower=1> N2;
-  vector[N2] x2;
+  real x2[N2];
 }
 transformed data {
-  int<lower=1> N;
-  vector[N1+N2] x;
-  N = N1 + N2;
-  for (n in 1:N1) x[n] = x1[n];
-  for (n in 1:N2) x[N1 + n] = x2[n];
+  real delta = 1e-9;
+  int<lower=1> N = N1 + N2;
+  real x[N];
+  for (n1 in 1:N1) x[n1] = x1[n1];
+  for (n2 in 1:N2) x[N1 + n2] = x2[n2];
 }
 parameters {
-  vector[N2] y2;
-  real<lower=0> eta_sq;
-  real<lower=0> inv_rho_sq;
-  real<lower=0> sigma_sq;
-  real alpha;
-  real beta;
+  real<lower=0> rho;
+  real<lower=0> alpha;
+  real<lower=0> sigma;
+  vector[N] eta;
 }
 transformed parameters {
-  real<lower=0> rho_sq;
-  vector[N1+N2] mu;
-  rho_sq = inv(inv_rho_sq);
-  for (i in 1:N) mu[i] = alpha + beta * x[i];
-} 
-model {
-  matrix[N,N] Sigma;
-  vector[N] y;
+  vector[N] f;
+  {
+    matrix[N, N] L_K;
+    matrix[N, N] K = cov_exp_quad(x, alpha, rho);
 
-// off-diagonal elements
-  for (i in 1:(N-1)) {
-    for (j in (i+1):N) {
-      Sigma[i, j] = eta_sq * exp(-rho_sq * pow(x[i] - x[j],2));
-      Sigma[j, i] = Sigma[i, j];
-    } 
+    // diagonal elements
+    for (n in 1:N)
+      K[n, n] = K[n, n] + delta;
+
+    L_K = cholesky_decompose(K);
+    f = L_K * eta;
   }
-  // diagonal elements
-  for (k in 1:N)
-    Sigma[k, k] = eta_sq + sigma_sq;
-  eta_sq ~ cauchy(0, 5);
-  inv_rho_sq ~ cauchy(0, 5);
-  sigma_sq ~ cauchy(0, 5);
-  
-  for (n in 1:N1) y[n] = y1[n];
-  for (n in 1:N2) y[N1 + n] = y2[n];
-  y ~ multi_normal(mu, Sigma);
 }
-'
-x2 = (max(sheep$year)+1):(max(sheep$year) + 20)
-stan_run = stan(data = list(N1 = nrow(sheep), 
-                            N2 = 20,
+model {
+  rho ~ inv_gamma(5, 5);
+  alpha ~ std_normal();
+  sigma ~ std_normal();
+  eta ~ std_normal();
+
+  y1 ~ normal(f[1:N1], sigma);
+}
+generated quantities {
+  vector[N2] y2;
+  for (n2 in 1:N2)
+    y2[n2] = normal_rng(f[N1 + n2], sigma);
+}'
+n_new <- 30
+x2 = seq(min(sheep$year), max(sheep$year), length = n_new)
+stan_run = stan(data = list(N1 = nrow(sheep),
+                            N2 = n_new,
                             x2 = x2,
                             x1 = sheep$year,
                             y1 = sheep$sheep),
@@ -366,8 +361,7 @@ stan_run = stan(data = list(N1 = nrow(sheep),
 ```{r, message=FALSE, echo = FALSE}
 pred_ci = apply(extract(stan_run, pars = 'y2')$y2, 
              2, 'quantile', c(0.25,0.5,0.75))
-plot(sheep$year, sheep$sheep, xlim = c(min(sheep$year),
-                                       max(sheep$year)+20), 
+plot(sheep$year, sheep$sheep, 
      ylim = c(200, 550), type = 'l')
 lines(x2, pred_ci[1,], col = 'red')
 lines(x2, pred_ci[2,], col = 'red')

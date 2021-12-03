@@ -3,13 +3,15 @@ title: 'Class 3: Fitting Bayesian time series models'
 author: Andrew Parnell \newline \texttt{andrew.parnell@mu.ie}   \newline \vspace{1cm}
   \newline \includegraphics[width=3cm]{../maynooth_uni_logo.jpg}
   \newline \vspace{1cm}
-  https://andrewcparnell.github.io/TSDA/
   \newline PRESS RECORD 
+  https://andrewcparnell.github.io/TSDA/
 output:
   beamer_presentation:
     includes:
       in_header: ../header.tex
 classoption: "aspectratio=169"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -18,6 +20,8 @@ options(width = 40)
 par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
 pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast','rstan')
 lapply(pkgs, library, character.only = TRUE)
+options(mc.cores = parallel::detectCores())
+rstan_options(auto_write = TRUE)
 ```
 
 ## Learning outcomes
@@ -87,14 +91,14 @@ model {
     y[t] ~ normal(alpha + beta * y[t-1], sigma);
   // Priors
   alpha ~ normal(0, 10);
-  beta ~ normal(0, 10);
+  beta ~ normal(0, 1);
   sigma ~ uniform(0, 100);
 }'
 ```
 
 ## Reminder: Forest fire data
 
-```{r, fig.height = 6}
+```{r}
 ff = read.csv('../../data/forest_fires.csv')
 with(ff, plot(year, acres, type = 'l',
                 ylab = 'Number of acres',
@@ -119,12 +123,12 @@ stan_run_ar1 = sampling(stan_mod_ar1,
 
 - ...or just optimizing:
 ```{r, message = FALSE, results = 'hide'}
-stan_opt_ar1 = optimizing(stan_mod_ar1,
-                          data = list(y = scale(ff$acres)[,1],
-                                      N = nrow(ff)))
+# stan_opt_ar1 = optimizing(stan_mod_ar1,
+#                           data = list(y = scale(ff$acres)[,1],
+#                                       N = nrow(ff)))
 ```
 ```{r}
-print(stan_opt_ar1)
+# print(stan_opt_ar1)
 ```
 
 

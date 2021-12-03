@@ -34,9 +34,9 @@ Time  | Class
 11:45-12:00 | Break 
 12:00-13:00 | Integrated models and ARIMA [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_2/class_3_ARIMA.pdf)
 13:00-14:00 | Lunch
-14:00-14:45 | Tutor-guided practical: the `forecast` package in R [(code)]()
+14:00-14:45 | Tutor-guided practical: the `forecast` package in R [(code)](https://andrewcparnell.github.io/TSDA/practicals/tutor_2_forecast.R)
 14:45-15:00 | Coffee break
-15:00-17:00 | Self-guided practical: Fitting ARIMA models with `forecast` [(worksheet)]() [(answer code)]()
+15:00-17:00 | Self-guided practical: Fitting ARIMA models with `forecast` [(worksheet)](https://andrewcparnell.github.io/TSDA/practicals/prac_2_ARIMA.pdf)
 
 ## Day 3
 
@@ -48,32 +48,32 @@ Time  | Class
 11:45-12:00 | Break 
 12:00-13:00 | Model choice and forecasting using Bayes [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_3/class_3_model_choice.pdf)
 13:00-14:00 | Lunch
-14:00-14:45 | Tutor-guided practical: a walkthrough example time series analysis [(code)]()
+14:00-14:45 | Tutor-guided practical: a walkthrough example time series analysis [(code)](https://andrewcparnell.github.io/TSDA/practicals/tutor_3_walkthrough.R)
 14:45-15:00 | Coffee break
-15:00-17:00 | Self-guided practical: finding the best time series model for your data set [(worksheet)]()
+15:00-17:00 | Self-guided practical: finding the best time series model for your data set [(worksheet)](https://andrewcparnell.github.io/TSDA/practicals/prac_3_your_data.pdf)
 
 ## Day 4
 
 Time  | Class
 ------------- | ----------------------------------------------------
-9:30-10:30 | Modelling with seasonality and the frequency domain [(slides)]() 
+9:30-10:30 | Modelling with seasonality and the frequency domain [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_4/class_1_seasonality.pdf) 
 10:30-10:45 | Coffee break
-10:45-11:45 | Stochastic volatility models and heteroskedasticity [(slides)]()
+10:45-11:45 | Stochastic volatility models and heteroskedasticity [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_4/class_2_svm.pdf)
 11:45-12:00 | Break 
-12:00-13:00 | Fitting Bayesian time series models [(slides)]()
+12:00-13:00 | Fitting Bayesian time series models [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_4/class_3_Bayes_fit.pdf)
 13:00-14:00 | Lunch
-14:00-14:45 | Tutor-guided practical: fitting time series models in JAGS and Stan [(code)]()
+14:00-14:45 | Tutor-guided practical: fitting time series models in JAGS and Stan [(code)](https://andrewcparnell.github.io/TSDA/practicals/tutor_4_JAGS.R)
 14:45-15:00 | Coffee break
-15:00-17:00 | Self-guided practical: start analysing your own data set with Bayes [(worksheet)]()
+15:00-17:00 | Self-guided practical: start analysing your own data set with Bayes [(worksheet)](https://andrewcparnell.github.io/TSDA/practicals/prac_4_your_data_2.pdf)
 
 ## Day 5
 
 Time  | Class
 ------------- | ----------------------------------------------------
-9:30-10:30 | Models for continuous time series: Brownian Motion and Ornstien-Uhlenbeck processes [(slides)]()
+9:30-10:30 | Models for continuous time series: Brownian Motion and Ornstien-Uhlenbeck processes [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_5/class_1_BM.pdf)
 10:30-10:45 | Coffee break
-10:45-11:45 | State-space and change point models [(slides)]()
+10:45-11:45 | State-space and change point models [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_5/class_2_change_point.pdf)
 11:45-12:00 | Break 
-12:00-13:00 | Multivariate time series models, Splines, and Gaussian processes [(slides)]()
+12:00-13:00 | Multivariate time series models, Splines, and Gaussian processes [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_5/class_3_multivariate.pdf)
 13:00-14:00 | Lunch
 14:00-16:30 | Open session: analyse your own data set 
