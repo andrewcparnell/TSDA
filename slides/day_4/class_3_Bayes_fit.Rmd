@@ -3,7 +3,7 @@ title: 'Class 3: Fitting Bayesian time series models'
 author: Andrew Parnell \newline \texttt{andrew.parnell@mu.ie}   \newline \vspace{1cm}
   \newline \includegraphics[width=3cm]{../maynooth_uni_logo.jpg}
   \newline \vspace{1cm}
-  https://andrewcparnell.github.io/IntroTSA/
+  https://andrewcparnell.github.io/TSDA/
   \newline PRESS RECORD 
 output:
   beamer_presentation:
@@ -14,8 +14,9 @@ classoption: "aspectratio=169"
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(dev = 'pdf', fig.height = 5)
+options(width = 40)
 par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
-pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast')
+pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast','rstan')
 lapply(pkgs, library, character.only = TRUE)
 ```
 
@@ -73,18 +74,18 @@ model {
 ```{r, include = FALSE}
 stan_code = '
 data {
-  int<lower=0> N; # number of observations
-  vector[N] y; # response variable
+  int<lower=0> N; // number of observations
+  vector[N] y; // response variable
 }
 parameters {
-  real alpha; # intercept
-  real beta; # AR parameter
-  real<lower=0> sigma; # residual sd
+  real alpha; // intercept
+  real beta; // AR parameter
+  real<lower=0> sigma; // residual sd
 }
 model {
   for (t in 2:N) 
     y[t] ~ normal(alpha + beta * y[t-1], sigma);
-  # Priors
+  // Priors
   alpha ~ normal(0, 10);
   beta ~ normal(0, 10);
   sigma ~ uniform(0, 100);
@@ -139,16 +140,16 @@ print(stan_opt_ar1)
 ```{r}
 stan_code = '
 data {
-  int<lower=0> N; # number of observations
-  vector[N] y; # response variable
+  int<lower=0> N; // number of observations
+  vector[N] y; // response variable
 }
 parameters {
-  real alpha; # intercept
-  real beta; # AR parameter
-  vector[N] h; # stochastic volatility process
-  real alpha_h; # SVM mean
-  real beta_h; # SVM AR parameter
-  real<lower=0> sigma_h; # SVM residual SD
+  real alpha; // intercept
+  real beta; // AR parameter
+  vector[N] h; // stochastic volatility process
+  real alpha_h; // SVM mean
+  real beta_h; // SVM AR parameter
+  real<lower=0> sigma_h; // SVM residual SD
 }
 model {
   h[1] ~ normal(alpha_h, 1);
@@ -223,15 +224,15 @@ $$\mu_{\mbox{day}} \sim N(\mu_{\mbox{day}-1}, \sigma_\mu^2)$$
 ```{r}
 stan_code = '
 data {
-  int<lower=0> N; # number of observations
-  int<lower=0> N_day; # total number of days
-  vector[N] y; # response variable
-  int day[N]; # variable to match days to observations
+  int<lower=0> N; // number of observations
+  int<lower=0> N_day; // total number of days
+  vector[N] y; // response variable
+  int day[N]; // variable to match days to observations
 }
 parameters {
-  real<lower=0> sigma; # st dev within day
-  real<lower=0> sigma_mu; # st dev of RW
-  vector[N_day] mu; # repeated measure parameter
+  real<lower=0> sigma; // st dev within day
+  real<lower=0> sigma_mu; // st dev of RW
+  vector[N_day] mu; // repeated measure parameter
 }
 model {
   mu[1] ~ normal(0, sigma_mu);
@@ -349,14 +350,14 @@ with(wheat, plot(year, wheat, type = 'l',
 ```{r}
 stan_code = '
 data {
-  int<lower=0> N; # number of observations
-  int<lower=0> max_P; # maximum number of AR lags
-  vector[N] y; # response variable
+  int<lower=0> N; // number of observations
+  int<lower=0> max_P; // maximum number of AR lags
+  vector[N] y; // response variable
 }
 parameters {
-  real alpha; # intercept
-  vector[max_P] beta; # AR parameter
-  real<lower=0> sigma; # residual sd
+  real alpha; // intercept
+  vector[max_P] beta; // AR parameter
+  real<lower=0> sigma; // residual sd
 }
 model {
   for (t in (max_P+1):N) {
@@ -366,7 +367,7 @@ model {
           mu = mu + beta[k] * y[t-k];
         y[t] ~ normal(mu, sigma);
   }
-  # Priors
+  // Priors
   alpha ~ normal(0, 10);
   for (k in 1:max_P) {
     beta ~ double_exponential(0, 1);  

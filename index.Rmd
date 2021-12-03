@@ -1,12 +1,12 @@
 ---
-title: "Introduction to Time Series Analysis: course timetable"
+title: "Time Series Data Analysis: course timetable"
 author: "Andrew Parnell"
 date: "December 2021 - online version"
 output: html_document
 ---
 
 Module pre-requisites can be found
-[here](https://andrewcparnell.github.io/IntroTSA/prerequisites.html). Please install these when you have a few spare minutes. All the raw files and code can be found [here](https://www.github.com/andrewcparnell/IntroTSA) (click 'Code > Download ZIP' near the top right if you want offline versions of everything). All links below are in pdf format for you to annotate. 
+[here](https://andrewcparnell.github.io/TSDA/prerequisites.html). Please install these when you have a few spare minutes. All the raw files and code can be found [here](https://www.github.com/andrewcparnell/TSDA) (click 'Code > Download ZIP' near the top right if you want offline versions of everything). All links below are in pdf format for you to annotate. 
 
 Please note that the course will be recorded so please turn off video if you do not wish to be shown on the recordings. 
 
@@ -14,25 +14,25 @@ Please note that the course will be recorded so please turn off video if you do 
 
 Time  | Class
 ------------- | ----------------------------------------------------
-9:30-10:30 | Introduction, example data sets [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_1/class_1_intro.pdf)
+9:30-10:30 | Introduction, example data sets [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_1/class_1_intro.pdf)
 10:30-10:45 | Coffee break
-10:45-11:45 | Revision: likelihood and inference [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_1/class_2_inference.pdf)
+10:45-11:45 | Revision: likelihood and inference [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_1/class_2_inference.pdf)
 11:45-12:00 | Break 
-12:00-13:00 | Revision: linear regression and GLMs [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_1/class_3_glms.pdf)
+12:00-13:00 | Revision: linear regression and GLMs [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_1/class_3_glms.pdf)
 13:00-14:00 | Lunch
-14:00-14:45 | Tutor-guided practical: Loading data in R and running simple analysis [(code)](https://andrewcparnell.github.io/IntroTSA/practicals/tutor_1_R_basics.R)
+14:00-14:45 | Tutor-guided practical: Loading data in R and running simple analysis [(code)](https://andrewcparnell.github.io/TSDA/practicals/tutor_1_R_basics.R)
 14:45-15:00 | Coffee break
-15:00-17:00 | Self-guided practical: Using R for linear regression and GLMs' [(worksheet)](https://andrewcparnell.github.io/IntroTSA/practicals/prac_1_example_data.pdf) [(answer code)](https://andrewcparnell.github.io/IntroTSA/practicals/prac_1_answers.R)
+15:00-17:00 | Self-guided practical: Using R for linear regression and GLMs' [(worksheet)](https://andrewcparnell.github.io/TSDA/practicals/prac_1_example_data.pdf) [(answer code)](https://andrewcparnell.github.io/TSDA/practicals/prac_1_answers.R)
 
 ## Day 2
 
 Time  | Class
 ------------- | ----------------------------------------------------
-9:30-10:30 | Auto-regressive models and random walks [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_2/class_1_AR.pdf)
+9:30-10:30 | Auto-regressive models and random walks [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_2/class_1_AR.pdf)
 10:30-10:45 | Coffee break
-10:45-11:45 | Moving averages and ARMA [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_2/class_2_ARMA.pdf)
+10:45-11:45 | Moving averages and ARMA [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_2/class_2_ARMA.pdf)
 11:45-12:00 | Break 
-12:00-13:00 | Integrated models and ARIMA [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_2/class_3_ARIMA.pdf)
+12:00-13:00 | Integrated models and ARIMA [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_2/class_3_ARIMA.pdf)
 13:00-14:00 | Lunch
 14:00-14:45 | Tutor-guided practical: the `forecast` package in R [(code)]()
 14:45-15:00 | Coffee break
@@ -42,11 +42,11 @@ Time  | Class
 
 Time  | Class
 ------------- | ----------------------------------------------------
-9:30-10:30 | Including covariates: ARIMAX models [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_3/class_1_ARIMAX.pdf)
+9:30-10:30 | Including covariates: ARIMAX models [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_3/class_1_ARIMAX.pdf)
 10:30-10:45 | Coffee break
-10:45-11:45 | Creating bespoke time series models using Bayes [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_3/class_2_Bayes.pdf)
+10:45-11:45 | Creating bespoke time series models using Bayes [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_3/class_2_Bayes.pdf)
 11:45-12:00 | Break 
-12:00-13:00 | Model choice and forecasting using Bayes [(slides)](https://andrewcparnell.github.io/IntroTSA/slides/day_3/class_3_model_choice.pdf)
+12:00-13:00 | Model choice and forecasting using Bayes [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_3/class_3_model_choice.pdf)
 13:00-14:00 | Lunch
 14:00-14:45 | Tutor-guided practical: a walkthrough example time series analysis [(code)]()
 14:45-15:00 | Coffee break

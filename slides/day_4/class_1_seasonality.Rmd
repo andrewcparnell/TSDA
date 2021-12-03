@@ -3,7 +3,7 @@ title: 'Class 1: Modelling with seasonality and the frequency domain'
 author: Andrew Parnell \newline \texttt{andrew.parnell@mu.ie}   \newline \vspace{1cm}
   \newline \includegraphics[width=3cm]{../maynooth_uni_logo.jpg}
   \newline \vspace{1cm}
-  https://andrewcparnell.github.io/IntroTSA/
+  https://andrewcparnell.github.io/TSDA/
   \newline PRESS RECORD 
 output:
   beamer_presentation:
@@ -14,6 +14,7 @@ classoption: "aspectratio=169"
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(dev = 'pdf', fig.height = 5)
+options(width = 40)
 par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
 pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast')
 lapply(pkgs, library, character.only = TRUE)
@@ -176,7 +177,7 @@ model
 
 ## Fitting a sARIMA$(1,0,0)(1,0,0)_{12}$ model in JAGS
 
-\tiny 
+\small 
 
 ```{r, message = FALSE, results = 'hide'}
 s_model_4 = jags(data = list(y = CO2_ts, s = 12, 

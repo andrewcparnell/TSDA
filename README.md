@@ -1,8 +1,8 @@
-# Training course: Introduction to Time Series Analysis
+# Training course: Time Series Data Analysis
 
 ## About
 
-This course covers introductory modelling for the analysis of time series data. The main focus of the course is on data observed at regular (discrete) time points but later modules cover continuously-observed data. The methods are presented both at a theoretical level and also with practical examples where all code is available. The practical classes include instructions on how to use the popular `forecast` package. The second half of the course looks at Bayesian time series analysis which is extremely customisable to bespoke data analysis situations.
+This course covers statistical modelling for the analysis of time series data. The main focus of the course is on data observed at regular (discrete) time points but later modules cover continuously-observed data. The methods are presented both at a theoretical level and also with practical examples where all code is available. The practical classes include instructions on how to use the popular `forecast` package. The second half of the course looks at Bayesian time series analysis which is extremely customisable to bespoke data analysis situations.
 
 The course is structured over 5 days, covering the following topics:
 
@@ -28,4 +28,4 @@ Participants should have :
 
 Please install the software required for running the code [here]().
 
-You can start browsing the course by visiting the [timetable](https://andrewcparnell.github.io/IntroTSA/)
+You can start browsing the course by visiting the [timetable](https://andrewcparnell.github.io/TSDA/)
