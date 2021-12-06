@@ -14,7 +14,7 @@ Please note that the course will be recorded so please turn off video if you do 
 ## Day 1
 
 Time  | Class
-------------- | ----------------------------------------------------
+--------------- | ----------------------------------------------------
 9:30-10:30 | Introduction, example data sets [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_1/class_1_intro.pdf)
 10:30-10:45 | Coffee break
 10:45-11:45 | Revision: likelihood and inference [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_1/class_2_inference.pdf)
@@ -28,7 +28,7 @@ Time  | Class
 ## Day 2
 
 Time  | Class
-------------- | ----------------------------------------------------
+--------------- | ----------------------------------------------------
 9:30-10:30 | Auto-regressive models and random walks [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_2/class_1_AR.pdf)
 10:30-10:45 | Coffee break
 10:45-11:45 | Moving averages and ARMA [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_2/class_2_ARMA.pdf)
@@ -42,7 +42,7 @@ Time  | Class
 ## Day 3
 
 Time  | Class
-------------- | ----------------------------------------------------
+--------------- | ----------------------------------------------------
 9:30-10:30 | Including covariates: ARIMAX models [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_3/class_1_ARIMAX.pdf)
 10:30-10:45 | Coffee break
 10:45-11:45 | Creating bespoke time series models using Bayes [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_3/class_2_Bayes.pdf)
@@ -56,7 +56,7 @@ Time  | Class
 ## Day 4
 
 Time  | Class
-------------- | ----------------------------------------------------
+--------------- | ----------------------------------------------------
 9:30-10:30 | Modelling with seasonality and the frequency domain [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_4/class_1_seasonality.pdf) 
 10:30-10:45 | Coffee break
 10:45-11:45 | Stochastic volatility models and heteroskedasticity [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_4/class_2_svm.pdf)
@@ -70,7 +70,7 @@ Time  | Class
 ## Day 5
 
 Time  | Class
-------------- | ----------------------------------------------------
+--------------- | ----------------------------------------------------
 9:30-10:30 | Models for continuous time series: Brownian Motion and Ornstien-Uhlenbeck processes [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_5/class_1_BM.pdf)
 10:30-10:45 | Coffee break
 10:45-11:45 | State-space and change point models [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_5/class_2_change_point.pdf)
