@@ -13,7 +13,7 @@ Please note that the course will be recorded so please turn off video if you do 
 
 ## Day 1
 
-<span style="display: inline-block; width:200px">Time</span> | Class
+<span style="display: inline-block; width:100px">Time</span> | Class
 --------------- | ----------------------------------------------------
 9:30-10:30 | Introduction, example data sets [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_1/class_1_intro.pdf)
 10:30-10:45 | Coffee break
@@ -27,7 +27,7 @@ Please note that the course will be recorded so please turn off video if you do 
 
 ## Day 2
 
-Time  | Class
+<span style="display: inline-block; width:100px">Time</span>  | Class
 --------------- | ----------------------------------------------------
 9:30-10:30 | Auto-regressive models and random walks [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_2/class_1_AR.pdf)
 10:30-10:45 | Coffee break
@@ -41,7 +41,7 @@ Time  | Class
 
 ## Day 3
 
-Time  | Class
+<span style="display: inline-block; width:100px">Time</span>  | Class
 --------------- | ----------------------------------------------------
 9:30-10:30 | Including covariates: ARIMAX models [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_3/class_1_ARIMAX.pdf)
 10:30-10:45 | Coffee break
@@ -55,7 +55,7 @@ Time  | Class
 
 ## Day 4
 
-Time  | Class
+<span style="display: inline-block; width:100px">Time</span>  | Class
 --------------- | ----------------------------------------------------
 9:30-10:30 | Modelling with seasonality and the frequency domain [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_4/class_1_seasonality.pdf) 
 10:30-10:45 | Coffee break
@@ -69,7 +69,7 @@ Time  | Class
 
 ## Day 5
 
-Time  | Class
+<span style="display: inline-block; width:100px">Time</span>  | Class
 --------------- | ----------------------------------------------------
 9:30-10:30 | Models for continuous time series: Brownian Motion and Ornstien-Uhlenbeck processes [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_5/class_1_BM.pdf)
 10:30-10:45 | Coffee break
