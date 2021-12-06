@@ -13,7 +13,7 @@ Please note that the course will be recorded so please turn off video if you do 
 
 ## Day 1
 
-Time &nbsp; &nbsp; | Class
+<div style="width:100px">Time</div> | Class
 --------------- | ----------------------------------------------------
 9:30-10:30 | Introduction, example data sets [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_1/class_1_intro.pdf)
 10:30-10:45 | Coffee break
