@@ -66,15 +66,3 @@ Please note that the course will be recorded so please turn off video if you do 
 14:00-14:45 | Tutor-guided practical: fitting time series models in JAGS and Stan [(code)](https://andrewcparnell.github.io/TSDA/practicals/tutor_4_JAGS.R)
 14:45-15:00 | Coffee break
 15:00-17:00 | Self-guided practical: start analysing your own data set with Bayes [(worksheet)](https://andrewcparnell.github.io/TSDA/practicals/prac_4_your_data_2.pdf)
-
-## Day 5
-
-<span style="display: inline-block; width:100px">Time</span>  | Class
---------------- | ----------------------------------------------------
-9:30-10:30 | Models for continuous time series: Brownian Motion and Ornstien-Uhlenbeck processes [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_5/class_1_BM.pdf)
-10:30-10:45 | Coffee break
-10:45-11:45 | State-space and change point models [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_5/class_2_change_point.pdf)
-11:45-12:00 | Break 
-12:00-13:00 | Multivariate time series models, Splines, and Gaussian processes [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_5/class_3_multivariate.pdf)
-13:00-14:00 | Lunch
-14:00-16:30 | Open session: analyse your own data set 
