@@ -28,10 +28,10 @@ lapply(pkgs, library, character.only = TRUE)
 
 ## How this course works
 
-- This course lives on GitHub, at [github.com/andrewcparnell/ecots](www.github.com/andrewcparnell/introTSA) which means anyone can see the slides, code, etc, and make comments on it
+- This course lives on GitHub, at [github.com/andrewcparnell/TSDA](www.github.com/andrewcparnell/introTSA) which means anyone can see the slides, code, etc, and make comments on it
 - The timetable html document provides links to all the pdf slides, handouts, data and practicals
 - Let me know if you spot mistakes, as these can be easily updated on the GitHub page
-- There is an issues page if you want to ask questions
+- There is an issues page if you find mistakes, or use Slack to ask questions
 
 ## R code, slides, and practicals
 
@@ -90,7 +90,7 @@ with(CO2, plot(date, CO2_ppm, type = 'l', ylab = 'CO2 (parts per million)', xlab
 $$y_t = \mbox{trend}_t + \mbox{seasonality}_t + \mbox{error}_t$$
 
 - Most time series models concentrate on the error structure
-- Time Series analysis is usually harder if you need to identify the seasonality too
+- Time series analysis is usually harder if you need to identify the seasonality too
 
 ## Participation exercise
 
