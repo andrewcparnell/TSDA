@@ -86,8 +86,6 @@ Arima(wheat$wheat, order = c(1, 1, 0),
       include.drift = TRUE)
 ```
 
-- Much lower AIC!
-
 ## General format: the ARIMA(p,d,q) model
 
 - First take the $d$th difference of the series $y_t$, and call this $z_t$

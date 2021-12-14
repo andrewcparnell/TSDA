@@ -137,7 +137,7 @@ mean(x); sd(x)
 
 - It's called the method of moments because the mean and the standard deviation are known as the moments of a probability distribution
 
-- We write hat on the parameters (e.g. $\hat{\mu}$) to make it clear that these are parameter estimates and not the true values
+- We write hat on the parameters (e.g. $\hat{\mu}$) to make it clear that these are parameter estimates and not the 'true' values
 
 - The method gets a little bit fiddlier when the parameters don't represent the moments directly. For example with the binomial we'd need to solve a simultaneous equation
 
@@ -200,9 +200,10 @@ qqline(x)
 ## How do we estimate the uncertainty in parameters?
 
 - Having the 'best' values of the parameters isn't the whole story
-- We only have a limited set of data so we can't possibly know he true values exactly. We need to have estimates of uncertainty about the parameters
+- We only have a limited set of data so we can't possibly know the 'true' values exactly 
+- We need to have estimates of uncertainty about the parameters
 - With only a small set of data, the parameter uncertainty should be large
-- With a larger data set, we should be able to get closer to the true values
+- With a larger data set, the parameter uncertainty should narrow
 
 ## Calculating the uncertainty in the parameters
 
