@@ -1,15 +1,11 @@
-install.packages(c('R2jags', 
-                   'rjags', 
-                   'lubridate', 
-                   'tidyverse', 
-                   'forecast'))
+## Tutorial lab 3 - Walkthrough examples of time series analysis
 
 rm(list=ls())
 require(forecast)
 require(R2jags)
 require(rjags)
+library(ggplot2)
 
-## Tutorial lab 3 - Walkthrough examples of time series analysis
 
 ##############################
 #class_3_ARMA
@@ -31,16 +27,16 @@ require(rjags)
 # ----- HadCRUT is the dataset of monthly instrumental temperature records
 
 #1. Plot the data and the ACF/PACF
-hadcrut<-read.csv("hadcrut.csv") # HadCRUT is the dataset of monthly instrumental temperature records
+hadcrut<-read.csv("data/hadcrut.csv") # HadCRUT is the dataset of monthly instrumental temperature records
 head(hadcrut)
-tsdisplay(hadcrut$Anomaly) # Familarise with dataset
+ggtsdisplay(hadcrut$Anomaly) # Familarise with dataset
 
 #2. Decide if the data look stationary or not.
 # Test for trend-stationary
 t = seq_along(hadcrut$Anomaly)
 trendseries = lm(hadcrut$Anomaly ~ t)
 detrended_series = hadcrut$Anomaly - trendseries$fitted.values
-tsdisplay(detrended_series) # Not trend-stationary
+ggtsdisplay(detrended_series) # Not trend-stationary
 
 # Try difference-stationary
 
@@ -48,10 +44,8 @@ ndiffs(hadcrut$Anomaly)
 Anomaly_diff<-diff(hadcrut$Anomaly)
 
 #3. Guess at a suitable p and q for an ARMA(p, q) model
-tsdisplay(Anomaly_diff) # AR models look similar to ARMA 
-acf(Anomaly_diff)
-Acf(Anomaly_diff)
-# Try AR(2)
+ggtsdisplay(Anomaly_diff) # AR models look similar to ARMA 
+# Try AR(2)?
 
 #4. Fit the model
 model1 <- Arima(hadcrut$Anomaly, order = c(2,1,0), include.drift = TRUE)  
@@ -81,7 +75,7 @@ auto.arima(hadcrut$Anomaly, trace = TRUE)  # AIC = -274.32
 auto.arima(hadcrut$Anomaly, xreg=hadcrut$Year)  #AIC = -272.03 
 
 # set auto.arima model as our model to use
-model_new =  Arima(hadcrut$Anomaly, order = c(2,1,2), include.drift = TRUE) 
+model_new =  Arima(hadcrut$Anomaly, order = c(2,1,1), include.drift = TRUE) 
 model_new #AIC = -274.32
 
 #6. Check the residuals
@@ -92,8 +86,7 @@ qqnorm(residuals)
 qqline(residuals) # Want points along line
 acf(residuals)  # Check residuals don't correlate with themselves
 plot(fit, residuals) # Want random scatter
-hist(residuals) # Want normal distribution
-Box.test(residuals, type="Ljung", lag = 30)  # The null hypothesis for this test is that your model is a good fit.
+hist(residuals, breaks = 30) # Want normal distribution
 tsdiag(model_new, gof.lag = 30) # Combines plots
 checkresiduals(model_new) # Combines plots
 
@@ -110,19 +103,19 @@ plot(forecast(holt, h = 10))
 
 # ------- Second section: Lynx Dataset - Cyclic Pattern - Not fixed period
 
-lynx<-read.csv("lynx.csv")
+lynx<-read.csv("data/lynx.csv")
 
 # Start by getting a feel of the data and checking it's format
 head(lynx) #check format
 with(lynx, plot(year , number, type ='l'))
-tsdisplay(lynx$number) # from class_1_AR recognise repeating pattern in ACF
+ggtsdisplay(lynx$number) # from class_1_AR recognise repeating pattern in ACF
 # have issue with increasing mean - investigate non-stationarity
 
 # Log transformation makes the peaks and troughs appear in the same pattern
 lynx_log <- log(lynx$number)
-tsdisplay(lynx_log)
+ggtsdisplay(lynx_log)
 
-tsdisplay(diff(lynx$number)) # not great see PACF
+ggtsdisplay(diff(lynx$number)) # not great see PACF
 
 lambda <- BoxCox.lambda(lynx$number)
 lambda
@@ -151,11 +144,10 @@ data("nottem") # air temperatures around Nottingham castle
 
 # Start by getting a feel of the data and checking it's format
 head(nottem) #check format
-tsdisplay(nottem)
+ggtsdisplay(nottem)
 
 # Breakdown time series to trend, seasonal and remainder
 fit <- stl(nottem, s.window="periodic")
-lines(trendcycle(fit))
 autoplot(cbind(
   Data = nottem,
   Seasonal = seasonal(fit),
@@ -171,24 +163,24 @@ fit1 <- auto.arima(nott, trace = TRUE)
 fit1 <- auto.arima(nott)
 fit1 # aic =1091.07
 
-tsdisplay(diff(nott, lag=12)) #never use more than one seasonal diff
+ggtsdisplay(diff(nott, lag=12)) #never use more than one seasonal diff
 
 # Use AIC to compare within ARIMA models
-fit2 <- arima(nott, order = c(0,0,1), list(order = c(0,1,1), period = 12)) # Seasonal lag is neg so try SMA
+fit2 <- Arima(nott, order = c(0,0,1), list(order = c(0,1,1), period = 12)) # Seasonal lag is neg so try SMA
 fit2 # aic = 899.96
 
-fit3 <- arima(nott, order = c(0,0,2), list(order = c(0,1,1), period = 12))
+fit3 <- Arima(nott, order = c(0,0,2), list(order = c(0,1,1), period = 12))
 fit3
 # aic = 897.02
 
-fit4 <- arima(nott, order = c(0,0,1), list(order = c(0,1,2), period = 12))
+fit4 <- Arima(nott, order = c(0,0,1), list(order = c(0,1,2), period = 12))
 fit4 # aic = 892.66
 
-fit5 <- arima(nott, order = c(1,0,0), list(order = c(1,1,0), period = 12))
+fit5 <- Arima(nott, order = c(1,0,0), list(order = c(1,1,0), period = 12))
 fit5 # aic = 912.14
 
-tsdiag(fit3) # Check residuals
-tsdiag(fit4)
+ggtsdiag(fit3) # Check residuals
+ggtsdiag(fit4)
 qqnorm(fit4$residuals)
 qqline(fit4$residuals)
 qqnorm(fit3$residuals)
@@ -298,17 +290,15 @@ model
 {
   # Likelihood
   for (t in (p+1):T) {
-  y[t] ~ dnorm(mu[t], tau)
-  mu[t] <- alpha + inprod(beta, y[(t-p):(t-1)])
-  log_lik[i] <- logdensity.norm(y[t], mu[t], tau)
+    y[t] ~ dnorm(mu[t], sigma^-2)
+    mu[t] <- alpha + inprod(beta, y[(t-p):(t-1)])
   }
   # Priors
-  alpha ~ dnorm(0.0,0.01)
+  alpha ~ dnorm(0, 10^-2)
   for (i in 1:p) {
-  beta[i] ~ dnorm(0.0,0.01)
+    beta[i] ~ dunif(-1, 1)
   }
-  tau <- 1/pow(sigma,2) # Turn precision into standard deviation
-  sigma ~ dunif(0.0,10.0)
+  sigma ~ dunif(0, 10)
 }
 '
 
@@ -330,10 +320,11 @@ model_run = jags(data = model_data,
 # Check the output - are the true values inside the 95% CI?
 # Also look at the R-hat values - they need to be close to 1 if convergence has been achieved
 print(model_run)
+plot(model_run)
 
 post = model_run$BUGSoutput$sims.matrix
 head(post)
-cor(post[,1],post[,'beta'])
+cor(post[,'alpha'],post[,'beta'])
 plot(post[,'alpha'], type="l")
 
 #---------------------- Moving Average example 
@@ -376,21 +367,20 @@ model
 {
   # Set up residuals
   for(t in 1:q) {
-  eps[t] <- y[t] - alpha
+    eps[t] <- y[t] - alpha
   }
   # Likelihood
   for (t in (q+1):T) {
-  y[t] ~ dnorm(mean[t], tau)
-  mean[t] <- alpha + inprod(theta, eps[(t-q):(t-1)])
-  eps[t] <- y[t] - alpha - inprod(theta, eps[(t-q):(t-1)])
+    y[t] ~ dnorm(mean[t], sigma^-2)
+    mean[t] <- alpha + inprod(theta, eps[(t-q):(t-1)])
+    eps[t] <- y[t] - alpha - inprod(theta, eps[(t-q):(t-1)])
   }
   # Priors
-  alpha ~ dnorm(0.0,0.01)
+  alpha ~ dnorm(0, 10^-2)
   for (i in 1:q) {
-  theta[i] ~ dnorm(0.5,0.1)
+    theta[i] ~ dunif(-1, 1)
   }
-  tau <- 1/pow(sigma,2) # Turn precision into standard deviation
-  sigma ~ dunif(0.0,10.0)
+  sigma ~ dunif(0 ,10)
 }
 '
 

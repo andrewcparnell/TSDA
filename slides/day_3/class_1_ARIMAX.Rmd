@@ -81,9 +81,9 @@ pacf(wheat$wheat)
 
 \small
 
-- Try ARIMAX(1, 1, 1)
+- Try ARIMAX(1, 0, 1)
 ```{r}
-Arima(wheat$wheat, order = c(1, 1, 1), xreg = wheat$year)
+Arima(wheat$wheat, order = c(1, 0, 1), xreg = wheat$year)
 ## Compare with:
 Arima(wheat$wheat, order = c(1, 1, 1))$aic
 ```
@@ -91,17 +91,17 @@ Arima(wheat$wheat, order = c(1, 1, 1))$aic
 ## Checking the residuals
 
 ```{r, fig.height = 4}
-my_model_ARIMAX111 = Arima(wheat$wheat, 
-                           order = c(1, 1, 1),
+my_model_ARIMAX101 = Arima(wheat$wheat, 
+                           order = c(1, 0, 1),
                            xreg = wheat$year)
-qqnorm(my_model_ARIMAX111$residuals)
-qqline(my_model_ARIMAX111$residuals)
+qqnorm(my_model_ARIMAX101$residuals)
+qqline(my_model_ARIMAX101$residuals)
 ```
 
 ## Predictions
 
 ```{r}
-plot(forecast(my_model_ARIMAX111, xreg = 2014:2033, h=20))
+plot(forecast(my_model_ARIMAX101, xreg = 2014:2033, h=20))
 ```
 
 ## A cheat way of skipping model choice
@@ -151,7 +151,7 @@ where $n$ is the number of data points (after differencing)
 
 ```{r, fig.height = 5}
 plot(wheat$wheat, type = 'l')
-lines(fitted(my_model_ARIMAX111), col = 'red')
+lines(fitted(my_model_ARIMAX101), col = 'red')
 ```
 
 ## Accuracy measures from `forecast`
@@ -162,7 +162,7 @@ lines(fitted(my_model_ARIMAX111), col = 'red')
 
 - It actually provides way more:
 ```{r}
-accuracy(my_model_ARIMAX111)
+accuracy(my_model_ARIMAX101)
 ```
 
 ## Proper LOO-CV
