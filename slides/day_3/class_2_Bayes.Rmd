@@ -14,7 +14,7 @@ classoption: "aspectratio=169"
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(dev = 'pdf', fig.height = 5)
-options(width = 40)
+options(width = 60)
 par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
 pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast', 'rstan')
 lapply(pkgs, library, character.only = TRUE)
@@ -216,7 +216,7 @@ print(stan_run)
 
 ## Stan plots
 
-```{r, message = FALSE, fig.height = 7}
+```{r, message = FALSE, fig.height = 5}
 plot(stan_run)
 ```
 
@@ -321,7 +321,7 @@ A good trace plot will show no patterns or runs, and will look like it has a sta
 - Both JAGS and Stan report the `Rhat` value, which is close to 1 when all the chains match
 - It's about the simplest and quickest way to check convergence. If you get `Rhat` values above 1.1, run your MCMC for more iterations
 
-## What else can I do with the output
+## What else can I do with the output?
 
 - We could create _credible intervals_ (Bayesian confidence intervals):
 \tiny
@@ -329,8 +329,10 @@ A good trace plot will show no patterns or runs, and will look like it has a sta
 apply(post, 2, quantile, probs = c(0.025, 0.975))
 ```
 
+## What else can I do with the output? (part 2)
+
 - Or histograms 
-```{r, fig.height = 3}
+```{r, fig.height = 5}
 hist(post[,'beta'], breaks = 30)
 ```
 

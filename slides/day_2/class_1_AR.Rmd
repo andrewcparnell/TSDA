@@ -47,7 +47,7 @@ $$y_t = \mbox{trend}_t + \mbox{seasonality}_t + \mbox{error}_t$$
 
 - ... but sometimes it is not easy to separate these into different parts
 
-- The concept of _stationarity_ helps us decompose the time series
+- All of the modelling we do today will focus on the _error_ component
 
 ## A time series with a big trend?
 
@@ -74,37 +74,24 @@ y <- cumsum(sample(c(-1, 1), size=1000, replace=TRUE))
 plot(y, type = 'l')
 ```
 
-## Generating a one-dimensional random walk
-
-1. Start at zero
-2. Flip a coin and move (+1) for heads (-1) for tails
-3. Repeat
-
-Where do you end up?
-- Expected mean is 0 as number of steps gets large
-$$ \hat{Y}_{t} = Y_{t-1} $$
-
-- The variance of the series gets larger as you move into the future
-- But in an infinite series, every point (including zero) is crossed an infinite number of times. This causes the __gambler's ruin__
-
 ## Random walk applications
 
 The steps don't have to be the same size.
 
 - A step size with a Gaussian distribution is useful for modelling stock markets 
-- If the step size probability distribution is heavy tailed, we have _Levy flight_
+- If the step size probability distribution is heavy tailed (e.g. $t$ distributed), we have a _Levy Process_
 - They also don't have to be in 1 dimension. We can simulate random walks in 2, 3, ... dimensions by adding multivariate steps
 
 ## Levy flight vs Brownian motion in 2D
 
 \begin{center}
 \begin{tabular}{cc}
-\includegraphics[width=4.5cm]{LevyFlight.png} & 
-\includegraphics[width=4.5cm]{BrownianMotion.png}
+\includegraphics[width=4.5cm]{BrownianMotion.png} &
+\includegraphics[width=4.5cm]{LevyFlight.png}
 \end{tabular}
 \end{center}
 
-There is evidence that animals such as sharks follow a levy flight pattern (left) when foraging for food - they had previously been thought to approximate Brownian motion (right)
+There is evidence that animals such as sharks follow a levy flight pattern (right) when foraging for food - they had previously been thought to approximate Brownian motion (left)
 
 ## Diagnosing time series behaviour
 
@@ -121,7 +108,7 @@ There is evidence that animals such as sharks follow a levy flight pattern (left
 acf(y)
 ```
 
-This random walk series has very high autocorrelation
+This random walk series has very high autocorrelation and many different lags
 
 ## A real acf
 

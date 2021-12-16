@@ -51,6 +51,16 @@ There are two key things to be wary of when using this type of ARIMAX model:
 
 If you're just interested in forecasting then the problem in 1 goes away, but if you are interested in the causation of $x$ on $y$ you can fit the regression model separately or try a dynamic regression model (see later in course)
 
+## `forecast` and ARIMAX
+
+The `forecast` package fits a slightly different version of the ARIMAX model:
+
+$$y_t  = \phi_1 x_{1t} + \ldots + \phi_r x_{rt} + e_t$$
+$$e_t \sim N(\alpha + \mbox{AR terms} + \mbox{MA terms}, \sigma^2)$$
+This has the advantage of retaining the interpretation on the $\phi$ parameters but now isn't exactly an ARIMA model
+
+- `forecast` calls this a regression with ARMA errors
+
 ## An ARIMAX model for the wheat data
 
 ```{r, fig.height = 6}

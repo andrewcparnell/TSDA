@@ -6,7 +6,7 @@
 # We'll use an R package call lubricate
 
 install.packages("lubridate")
-require(lubridate)
+library(lubridate)
 
 # ---------- Manipulate single date
 # Tell R order of year, month and day
@@ -83,7 +83,7 @@ as.period(lynx_trappings) #per time unit
 
 date1 <- c("1jan1960", "2jan1960", "31mar1960", "30jul1960")
 date1
-date2 <- as.Date(x, "%d%b%Y") 
+date2 <- as.Date(date1, "%d%b%Y") 
 date2
 is.Date(as.Date("2009-08-03"))
 
@@ -146,18 +146,18 @@ as.Date(as.POSIXct(1*60*60*24, origin = "2017-06-27", tz = "GMT"))
 
 #------------ Second Section Forecast package -----------
 
-require(forecast)
-require(ggplot2) #  Not essential - will point out where this occurs
+library(forecast)
+library(ggplot2) #  Not essential - will point out where this occurs
 
 # Dealing with outliers in a dataset
-CO2<-read.csv("CO2.csv")
+CO2<-read.csv("data/CO2.csv")
 tsdisplay(CO2$CO2_ppm)
 # Replaces outliers and missing values using linear interpolation
 clean_CO2<-tsclean(CO2$CO2_ppm) 
 tsdisplay(clean_CO2)
 
 # "Best" ARIMA answer
-tide<-read.csv("tide_gauge.csv")
+tide<-read.csv("data/tide_gauge.csv")
 auto.arima(tide$sea_level_m) # based on aic
 auto.arima(tide$sea_level_m, ic = "bic") # different model for bic
 auto.arima(tide$sea_level_m, xreg = tide$year_AD)
@@ -209,8 +209,8 @@ plot(y_seasonal)
 
 # The "optimal value - best approximation of a normal distribution curve.
 
-fires<-read.csv("fires.csv")  
-tsdisplay(fires$acres) #asymmetric data
+fires<-read.csv("data/forest_fires.csv")  
+ggtsdisplay(fires$acres) #asymmetric data
 
 lambda1 <- BoxCox.lambda(fires$acres, lower = -3) #calculate appropriate transformation
 lambda1
@@ -230,7 +230,7 @@ fires.fit <- Arima(fires$acres, order = c(1,0,0),
 forecast(fires.fit, h = 3)
 
 # Breakdown dataset into components
-fit <- stl(fires$acres, s.window="periodic") # not seasonal
+fit <- stl(CO2$CO2_ppm, s.window="periodic") # not seasonal
 
 data("nottem")
 fit <- stl(nottem, s.window="periodic")

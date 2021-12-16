@@ -1,0 +1,135 @@
+---
+title: 'Day 2: Self-guided practical - Fitting ARIMA models with `forecast`'
+author: "Andrew Parnell"
+output:
+  html_document:
+    code_folding: hide
+urlcolor: blue
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+rm(list=ls()) # Clear the workspace
+knitr::opts_chunk$set(echo = TRUE, results = 'hide', message = FALSE,
+                      fig.show = 'hide', warning = FALSE)
+par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01, las=1)
+options(width = 50)
+pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast')
+lapply(pkgs, library, character.only = TRUE)
+```
+
+## Introduction
+
+In this practical you will:
+
+- Fit a basic ARIMA model to the `airquality` data
+- See if you can beat it with some of the other methods available through `forecast`
+- Quantify the accuracy of each method
+
+As yesterday, you should work your way through the questions and put your hand up if you get stuck. The answer script is also available in the practicals folder.
+
+## Tasks
+
+1. Create a new data frame called `airquality2` from the `airquality` data set already loaded into R. Use the `as.Date` function to convert Month and Day into a proper time variable called `Date`.
+
+```{r}
+airquality2 <- airquality
+airquality2$Date <- ymd(paste(1973, airquality$Month, airquality$Day))
+```
+
+
+2. Create some time series plots of Date vs Ozone and interpret them. Do you think it looks stationary? 
+
+```{r, }
+ggtsdisplay(airquality$Ozone)
+# Clean it up
+airqual_clean <- tsclean(airquality$Ozone) 
+ggtsdisplay(airqual_clean)
+```
+
+3. Yesterday we found that `Ozone` was a bit better behaved when we log-transformed it. Forecast has a smarter method for doing transformations using the Box-Cox transformation. Use the function `BoxCox.lambda` to estimate the lambda transformation parameter for the Ozone variable. Re-plot the data with the Box Cox transformed series and see if it looks more stationary.
+
+```{r}
+lam1 <- BoxCox.lambda(airqual_clean, lower = -3)
+ggtsdisplay(BoxCox(airqual_clean, lambda = lam1))
+```
+
+4. Hopefully you noticed that there are lots of missing values. If you try an ACF plot here using the standard `acf` function it will fail, but if you use the `forecast` functions `Acf` and `Pacf` it will work. Create and interpret the ACF and PACF plots. (You could also try running them on the transformed data using the function `BoxCox`)
+
+```{r}
+Acf(airquality2$Ozone)
+Pacf(airquality2$Ozone)
+```
+
+5. It looks like some kind of AR model might work for these data. Use `Arima` to fit an AR(1) model and interpret the output. Don't forget to include the lambda argument
+
+```{r}
+mod1 <- Arima(airquality2$Ozone, order = c(1, 0, 0), lambda = lam1)
+```
+
+
+6. Try an `auto.arima` model and interpret your output
+
+```{r}
+mod2 <- auto.arima(airquality2$Ozone, lambda = lam1)
+```
+
+7. Use the `forecast` function to plot 10 steps into the future using the model you just created
+
+```{r}
+plot(forecast(mod2, h= 10))
+```
+
+8. Check the residuals of your `auto.arima` model using `hist` and QQ-plots (hint: see answers from yesterday for a reminder)
+
+```{r}
+qqnorm(mod2$residuals)
+qqline(mod2$residuals)
+```
+
+
+9. Unfortunately with missing values, many of the other time series methods won't work. However, we can impute (i.e. replace) the missing values using the `na.interp` function. Create a new variable `Ozone2` in your `airquality2` data frame which has no missing values. Plot this new series
+
+```{r}
+airquality2$Ozone2 <- na.interp(airquality2$Ozone)
+ggtsdisplay(airquality2$Ozone2)
+```
+
+10. Let's now use this complete data set to try others types of model. Run the `ets`, `nnetar`, and `tslm` functions used in the earlier lectures and tutorials today to create some different models. See if you can find ones that beat the ARIMA versions. Try and interpret the model output
+
+```{r}
+y <- airquality2$Ozone2
+mod_arima <- auto.arima(y, lambda = lam1)
+mod_ets <- ets(y, lambda = lam1)
+mod_nn <- nnetar(y, lambda = lam1)
+mod_tslm <- tslm(y ~ trend, lambda = lam1)
+plot(forecast(mod_arima, h = 20))
+plot(forecast(mod_ets, h = 20))
+plot(forecast(mod_nn, h = 20))
+plot(forecast(mod_tslm, h = 20))
+```
+
+
+## Extra questions
+
+If you finished all the above try picking another data set from the pile (not a seasonal one yet as we don't cover it till tomorrow!) and see if you can follow our standard steps:
+
+1. Plot the data and the ACF/PACF
+
+2. Decide if the data look stationary or not. If not, perform a suitable transformation and return to 1. If the data has a strong trend or there is a high degree of autocorrelation try 1 or 2 differences
+
+3. Guess at a suitable p and q for an ARMA(p, q) model
+
+4. Fit the model
+
+5. Try a few models around it by increasing/decreasing p and q and checking the AIC (or others)
+
+6. Check the residuals
+
+7. Forecast into the future
+
+In step 3 you can also try some of the other standard models in `forecast`, such as `naive`, `ets`, `nnetar`, and `tslm`. 
+
+If you're feeling really brave see if you can get your own data set into a format suitable for ARIMA modelling. Even if it involves throwing away or approximating some data it will be a useful start
+

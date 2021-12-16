@@ -39,6 +39,7 @@ summary(mod_1) # AIC = 378.45
 # 6. Try an `auto.arima` model and interpret your output
 mod_2 = auto.arima(airquality2$Ozone, lambda = lambda) # Chooses 2,1, 0
 summary(mod_2) # AIC = 382.31 - slightly worse!
+# Read the help file for auto.arima. It actually uses approximations to fit models quickly and therefore missed the AR(1) model we found above
 
 # 7. Use the `forecast` function to plot 10 steps into the future using the model you just created
 plot(forecast(mod_2, h = 10))
