@@ -70,24 +70,23 @@ model
 {
   # Set up residuals
   for(t in 1:max(p,q)) {
-  eps[t] <- z[t] - alpha
+    eps[t] <- z[t] - alpha
   }
   # Likelihood
   for (t in (max(p,q)+1):T) {
-  z[t] ~ dnorm(alpha + ar_mean[t] + ma_mean[t], tau)
-  ma_mean[t] <- inprod(theta, eps[(t-q):(t-1)])
-  ar_mean[t] <- inprod(phi, z[(t-p):(t-1)])
-  eps[t] <- z[t] - alpha - ar_mean[t] - ma_mean[t]
+    z[t] ~ dnorm(alpha + ar_mean[t] + ma_mean[t], sigma^-2)
+    ma_mean[t] <- inprod(theta, eps[(t-q):(t-1)])
+    ar_mean[t] <- inprod(phi, z[(t-p):(t-1)])
+    eps[t] <- z[t] - alpha - ar_mean[t] - ma_mean[t]
   }
   # Priors
-  alpha ~ dnorm(0.0,0.01)
+  alpha ~ dnorm(0, 10^-2)
   for (i in 1:q) {
-  theta[i] ~ dnorm(0.0,0.01)
+    theta[i] ~ dnorm(0, 10^-2)
   }
   for(i in 1:p) {
-  phi[i] ~ dnorm(0.0,0.01)
+    phi[i] ~ dnorm(0, 10^-2)
   }
-  tau <- 1/pow(sigma,2) # Turn precision into standard deviation
   sigma ~ dunif(0.0,10.0)
 }
 '
@@ -317,8 +316,8 @@ model
 {
   # Likelihood
   for (t in 1:T) {
-  y[t] ~ dnorm(alpha, tau[t])
-  tau[t] <- 1/pow(sigma[t], 2)
+    y[t] ~ dnorm(alpha, sigma[t]^-2)
+    tau[t] <- 1/pow(sigma[t], 2)
   }
   sigma[1] ~ dunif(0, 10)
   for(t in 2:T) {
@@ -513,30 +512,30 @@ plot(1:T,y,type='l')
 
 stan_code = '
 data {
-int<lower=1> T; // num observations
-real y[T]; // observed outputs
+  int<lower=1> T; // num observations
+  real y[T]; // observed outputs
 }
 parameters {
-real alpha; // mean coeff
-real phi; // autoregression coeff
-real theta; // moving avg coeff
-real<lower=0> sigma; // noise scale
+  real alpha; // mean coeff
+  real phi; // autoregression coeff
+  real theta; // moving avg coeff
+  real<lower=0> sigma; // noise scale
 }
 model {
-vector[T] nu; // prediction for time t
-vector[T] err; // error for time t
-nu[1] = alpha + phi * alpha; // assume err[0] == 0
-err[1] = y[1] - nu[1];
-for (t in 2:T) {
-nu[t] = alpha + phi * y[t-1] + theta * err[t-1];
-err[t] = y[t] - nu[t];
+  vector[T] nu; // prediction for time t
+  vector[T] err; // error for time t
+  nu[1] = alpha + phi * alpha; // assume err[0] == 0
+  err[1] = y[1] - nu[1];
+  for (t in 2:T) {
+  nu[t] = alpha + phi * y[t-1] + theta * err[t-1];
+  err[t] = y[t] - nu[t];
 }
-alpha ~ normal(0, 10); // priors
-phi ~ normal(0, 10);
-theta ~ normal(0, 10);
-sigma ~ cauchy(0, 5); // Happier with this than the uniform
-//err ~ normal(0, sigma); // likelihood
-y ~ normal(nu, sigma); // likelihood
+  alpha ~ normal(0, 10); // priors
+  phi ~ normal(0, 10);
+  theta ~ normal(0, 10);
+  sigma ~ cauchy(0, 5); // Happier with this than the uniform
+  //err ~ normal(0, sigma); // likelihood
+  y ~ normal(nu, sigma); // likelihood
 }
 '
 

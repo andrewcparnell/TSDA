@@ -108,7 +108,7 @@ $$z_t \sim N \left( \alpha + \sum_{i=1}^p \beta_i z_{t-i} + \sum_{j=1}^q \theta_
 1. Guess at values of $p$, $d$, and $q$ for an ARIMA(p, d, q) model 
 1. Fit the model
 1. Try a few models around it by increasing/decreasing $p$, $d$ and $q$ and checking the AIC (or others)
-1. Check the residuals
+1. Check the residuals. If the residuals look strange (skewed or heavy tailed) perform a Box-Cox transformation and return to step 1
 1. Forecast into the future
 
 ## A real example: wheat data
