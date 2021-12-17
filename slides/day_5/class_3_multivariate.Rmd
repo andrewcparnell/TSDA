@@ -45,8 +45,8 @@ $$y_t = A + \Phi y_{t-1} + \epsilon_t,\; \epsilon_t \sim MVN(0, \Sigma)$$
 or equivalently 
 $$y_t \sim MVN(A + \Phi y_{t-1}, \Sigma)$$
 - where MVN is the multivariate normal distribution
-- Here the parameter vector $A$ controls the overall mean level for each of the $k$ series, $\Phi$ is a $k \times k$ matrix which controls the influence on the current value of the previous time points of _both_ series
-- $\Sigma$ here is a $k \times k$ matrix that controls the variance of the process and the residual correlation between the two series (NB: this is different from the GP formulation we met yesterday)
+- Here the parameter vector $A$ controls the overall mean level for each of the $k$ series, $\Phi$ is a $k \times k$ matrix which controls the influence on the current value of the previous time points of _all_ series
+- $\Sigma$ here is a $k \times k$ matrix that controls the variance of the process and the residual correlation between the multiple series
 
 ## JAGS code for the VAR model
 
@@ -66,7 +66,7 @@ model
 
   # Priors
   for(i in 1:k) {
-    A[i] ~ dnorm(0, 0.01)
+    A[i] ~ dnorm(0, 20^-2)
     Phi[i,i] ~ dunif(-1, 1)
     for(j in (i+1):k) {
       Phi[i,j] ~ dunif(-1,1)

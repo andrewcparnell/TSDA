@@ -49,9 +49,9 @@ $$\sigma_t^2 = \gamma_1 + \gamma_2 \epsilon_{t-1}^2$$
 where $\epsilon_{t}$ is the residual, just like an MA model
 - Note that $\epsilon_t = y_t - \alpha$ so the above can be re-written as:
 $$\sigma_t^2 = \gamma_1 + \gamma_2 (y_{t-1} - \alpha)^2$$
-- The variance at time $t$ thus depends on the previous value of the series (hence the autoregressive in the name)
+- The variance at time $t$ thus depends on the previous value of the forecast error (more like an MA model than AR)
 - The residual needs to be squared to keep the variance positive. 
-- The parameters $\gamma_1$ and $\gamma_2$ also need to be positive, and usually $\gamma_1 \sim U(0,1)$
+- The parameters $\gamma_1$ and $\gamma_2$ also need to be positive, and usually $\gamma_2 \sim U(0,1)$
 
 ## JAGS code for ARCH models
 
@@ -72,7 +72,7 @@ model
   # Priors
   alpha ~ dnorm(0.0, 100^-2)
   gamma_1 ~ dunif(0, 100)
-  gamma_2 ~ dunif(0, 100)
+  gamma_2 ~ dunif(0, 1)
 }
 '
 ```
@@ -142,7 +142,7 @@ model
   for (t in 1:T) {
     y[t] ~ dnorm(alpha, sigma[t]^-2)
   }
-  sigma[1] ~ dunif(0,1)
+  sigma[1] ~ dunif(0,10)
   for(t in 2:T) {
     sigma[t] <- sqrt(gamma_1 + gamma_2 * pow(y[t-1] - alpha, 2) 
                         + gamma_3 * pow(sigma[t-1], 2))
@@ -150,8 +150,8 @@ model
   # Priors
   alpha ~ dnorm(0, 10^-2)
   gamma_1 ~ dunif(0, 10)
-  gamma_2 ~ dunif(0, 10)
-  gamma_3 ~ dunif(0, 10)
+  gamma_2 ~ dunif(0, 1)
+  gamma_3 ~ dunif(0, 1)
 }
 '
 ```

@@ -3,18 +3,20 @@ title: 'Class 1: Modelling with seasonality and the frequency domain'
 author: Andrew Parnell \newline \texttt{andrew.parnell@mu.ie}   \newline \vspace{1cm}
   \newline \includegraphics[width=3cm]{../maynooth_uni_logo.jpg}
   \newline \vspace{1cm}
-  https://andrewcparnell.github.io/TSDA/
   \newline PRESS RECORD 
+  https://andrewcparnell.github.io/TSDA/
 output:
   beamer_presentation:
     includes:
       in_header: ../header.tex
 classoption: "aspectratio=169"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(dev = 'pdf', fig.height = 5)
-options(width = 40)
+options(width = 80)
 par(mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.01,las=1)
 pkgs = c('R2jags','rjags', 'lubridate', 'tidyverse','forecast')
 lapply(pkgs, library, character.only = TRUE)
@@ -43,12 +45,10 @@ lapply(pkgs, library, character.only = TRUE)
 ```{r, fig.height = 4}
 CO2 = read.csv(file = '../../data/CO2.csv', 
                na.strings = -99.99)
-CO2$date = as.Date(paste(CO2$year, CO2$month ,'01', 
-                         sep = '-'))
 CO2_1990 = CO2[CO2$year >= 1990, ]
-with(CO2_1990, plot(date, CO2_ppm, type = 'l', 
+with(CO2_1990, plot(1:nrow(CO2_1990), CO2_ppm, type = 'l', 
                     ylab = 'CO2 (parts per million)', 
-                    xlab = 'Year'), las = 1)
+                    xlab = 'Year', las = 1))
 ```
 
 ## ACF and PACF
@@ -67,7 +67,7 @@ pacf(CO2_1990$CO2_ppm)
 ```{r}
 CO2_1990$mfac = model.matrix(~ as.factor(CO2_1990$month) - 1)
 colnames(CO2_1990$mfac) = month.abb
-lm(CO2_ppm ~ year + mfac, data = CO2_1990)
+lm(CO2_ppm ~ year + mfac - 1, data = CO2_1990)
 ```
 
 ## Forecasts
@@ -82,13 +82,13 @@ plot(forecast(s_model_1, h = 24))
 ## What is the time series model doing here?
 
 - This is just a regression model, so that:
-$$y_t = \alpha + \beta_t \mbox{year}_t + \gamma_{1} \mbox{Feb}_t + \gamma_{2} \mbox{Mar}_t + \ldots + \gamma_{11} \mbox{Dec}_t + \epsilon_t$$
+$$y_t = \beta_t \mbox{year}_t + \gamma_{1} \mbox{Jan}_t + \gamma_{2} \mbox{Feb}_t + \gamma_{3} \mbox{Mar}_t + \ldots + \gamma_{12} \mbox{Dec}_t + \epsilon_t$$
 
 - You can do this using `lm` or using `forecast`'s special function for linear regression forecasting `tslm`
 
 - The `tslm` function is clever because it can automatically create the seasonal indicator variables
 
-- Remember that when dealing with indicator variables you have to drop one factor level for the model to fit
+- (Remember that when dealing with indicator variables you have to drop one factor level for the model to fit if you want to include an intercept)
 
 ## Seasonal time series 2: seasonal differencing
 
@@ -204,7 +204,7 @@ x = msts(taylor, seasonal.periods=c(48,336),
          start=2000+22/52)
 ```
 
-- The above is half-hourly data so has period 48 hours and 336 hours, i.e. weekly (336/48 = 7)
+- The above is half-hourly data so has period 48 half-hours and 336 hours, i.e. weekly (336/48 = 7)
 
 - `forecast` has some special functions (notably `tbats`) for modelling multi seasonality data
 
@@ -247,7 +247,7 @@ model
     mu[t] <- alpha + beta * cos(2*pi*t*f_k) + 
                 gamma * sin(2*pi*t*f_k )
   }
-  P = (pow(beta, 2) + pow(gamma, 2)) / 2
+  P = (beta^2 + gamma^2) / 2
 
   # Priors
   alpha ~ dnorm(0, 10^-2)

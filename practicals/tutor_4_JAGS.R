@@ -7,7 +7,7 @@
 # 6. Create the output that you want (forecasts, etc)
 
 #####################################################################
-# 1. Jags: AutoRegressive Integrated Moving Average (ARMA) models
+# 1. Jags: AutoRegressive Integrated Moving Average (ARIMA) models
 #####################################################################
 
 # ARIMA (AutoRegressive Integrated Moving Average) fit in JAGS
@@ -28,8 +28,8 @@ library(R2jags)
 # phi = AR parameters
 # sigma = residual standard deviation
 # d = number of first differences
-# p and q = number of autoregressive and moving average components respecrively
-# We do the differencing outside the model so let z[t] = diff(y, differnces = d)
+# p and q = number of autoregressive and moving average components respectively
+# We do the differencing outside the model so let z[t] = diff(y, differences = d)
 # Likelihood:
 # z[t] ~ N(alpha + phi[1] * z[t-1] + ... + phi[p] * z[y-p] + theta_1 ept_{t-1} + ... + theta_q eps_{t-q}, sigma^2)
 # Priors
@@ -43,7 +43,7 @@ library(R2jags)
 # Some R code to simulate data from the above model
 p = 1 # Number of autoregressive terms
 d = 0 # Number of differences
-q = 1 # Numner of MA terms
+q = 1 # Number of MA terms
 T = 100
 sigma = 1
 alpha = 0
@@ -148,7 +148,7 @@ abline(h=theta, col="red", lwd=2)
 # Real example ------------------------------------------------------------
 
 # Data wrangling and jags code to run the model on a real data set in the data directory
-hadcrut = read.csv('hadcrut.csv') #hadcrut = read.csv('https://raw.githubusercontent.com/andrewcparnell/tsme_course/master/data/hadcrut.csv')
+hadcrut = read.csv('data/hadcrut.csv')
 head(hadcrut)
 dim(hadcrut)
 
@@ -172,17 +172,17 @@ d = 1
 real_data = with(hadcrut,
                  list(T = nrow(hadcrut)-d,
                       z = diff(Anomaly, differences = d),
-                      q = 3,
-                      p = 3))
+                      q = 2,
+                      p = 2))
 
 # Run the model
 real_data_run = jags(data = real_data,
                      parameters.to.save = model_parameters,
                      model.file=textConnection(model_code),
                      n.chains=4,
-                     n.iter=1000,
-                     n.burnin=200,
-                     n.thin=2)
+                     n.iter=10000,
+                     n.burnin=2000,
+                     n.thin=20)
 
 # Plot output
 print(real_data_run)
@@ -213,8 +213,8 @@ for (t in (real_data$q+1):real_data$T) {
 # predicitons so they need to be added on
 with(hadcrut, plot(Year, Anomaly, type='l'))
 with(hadcrut, lines(Year, Anomaly+c(0,z_fit), col='blue'))
-
-# Not a bad fit!
+plot(hadcrut$Anomaly, hadcrut$Anomaly+ c(0, z_fit))
+abline(a = 0, b = 1)# Not a bad fit!
 
 # Create some predictions off into the future - this time do it within jags
 # A neat trick - just increase T and add on NAs into y!
@@ -224,8 +224,8 @@ real_data_future = with(hadcrut,
                              z = c(diff(hadcrut$Anomaly,
                                         differences = d),
                                    rep(NA,T_future)),
-                             q = 3,
-                             p = 3))
+                             q = 2,
+                             p = 2))
 
 # Just watch y now
 model_parameters =  c("z")
@@ -235,9 +235,9 @@ real_data_run_future = jags(data = real_data_future,
                             parameters.to.save = model_parameters,
                             model.file=textConnection(model_code),
                             n.chains=4,
-                            n.iter=1000,
-                            n.burnin=200,
-                            n.thin=2)
+                            n.iter=10000,
+                            n.burnin=2000,
+                            n.thin=20)
 
 # Print out the above
 print(real_data_run_future)
