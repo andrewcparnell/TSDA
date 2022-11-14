@@ -1,7 +1,7 @@
 ---
 title: "Time Series Data Analysis: course timetable"
 author: "Andrew Parnell"
-date: "December 2021 - online version"
+date: "November 2022 - online version"
 layout: default
 output: html_document
 ---

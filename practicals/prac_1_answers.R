@@ -1,6 +1,6 @@
 # Answer script for self-guided practical 1 
 
-## PLEASE DON"T READ THIS UNTIL YOU HAVE COMPLETED THE PRACTICAL QUESTIONS
+## PLEASE DON'T READ THIS UNTIL YOU HAVE COMPLETED THE PRACTICAL QUESTIONS
 
 # The tasks of this practical are to:
 # Load in some data

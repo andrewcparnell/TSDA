@@ -3,8 +3,8 @@ title: 'Class 1: Modelling with seasonality and the frequency domain'
 author: Andrew Parnell \newline \texttt{andrew.parnell@mu.ie}   \newline \vspace{1cm}
   \newline \includegraphics[width=3cm]{../maynooth_uni_logo.jpg}
   \newline \vspace{1cm}
-  \newline PRESS RECORD 
   https://andrewcparnell.github.io/TSDA/
+  \newline PRESS RECORD 
 output:
   beamer_presentation:
     includes:

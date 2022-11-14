@@ -20,11 +20,10 @@ Install the following using the corresponding links
 
 ### Step 2
 
-Now install the following packages by going into Rstudio (or R) by typing:
+Now install the following packages by going into Rstudio (or R) and typing:
 ```{r,eval=FALSE}
 install.packages(c('R2jags', 
                    'rjags', 
-                   'lubridate', 
                    'tidyverse', 
                    'forecast'))
 ```
