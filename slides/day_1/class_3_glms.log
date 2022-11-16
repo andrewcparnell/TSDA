@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.4.19)  14 NOV 2022 10:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.4.19)  16 NOV 2022 15:34
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1309,15 +1309,15 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <5> not available
 
 (./class_3_glms.vrb
 <class_3_glms_files/figure-beamer/unnamed-chunk-6-1.pdf, id=104, 689.57625pt x 
-249.93375pt>
+248.93pt>
 File: class_3_glms_files/figure-beamer/unnamed-chunk-6-1.pdf Graphic file (type
  pdf)
 <use class_3_glms_files/figure-beamer/unnamed-chunk-6-1.pdf>
 Package pdftex.def Info: class_3_glms_files/figure-beamer/unnamed-chunk-6-1.pdf
   used on input line 18.
-(pdftex.def)             Requested size: 398.34462pt x 144.37817pt.
+(pdftex.def)             Requested size: 398.34462pt x 143.79834pt.
 )
-Overfull \vbox (9.01447pt too high) detected at line 414
+Overfull \vbox (8.43463pt too high) detected at line 414
  []
 
 [12
@@ -1470,11 +1470,11 @@ Overfull \vbox (49.36551pt too high) detected at line 788
 
 (./class_3_glms.aux) ) 
 Here is how much of TeX's memory you used:
- 25133 strings out of 478268
- 486467 string characters out of 5846347
+ 25131 strings out of 478268
+ 486443 string characters out of 5846347
  768077 words of memory out of 5000000
  42552 multiletter control sequences out of 15000+600000
- 540532 words of font info for 139 fonts, out of 8000000 for 9000
+ 540431 words of font info for 138 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  128i,11n,122p,1009b,670s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/lm/lm
@@ -1495,7 +1495,7 @@ ic/lm/lmsso8.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/lm/lmsy
 sr/local/texlive/2022/texmf-dist/fonts/type1/public/lm/lmtt12.pfb></usr/local/t
 exlive/2022/texmf-dist/fonts/type1/public/lm/lmtt8.pfb></usr/local/texlive/2022
 /texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on class_3_glms.pdf (29 pages, 341756 bytes).
+Output written on class_3_glms.pdf (29 pages, 349460 bytes).
 PDF statistics:
  364 PDF objects out of 1000 (max. 8388607)
  270 compressed objects within 3 object streams

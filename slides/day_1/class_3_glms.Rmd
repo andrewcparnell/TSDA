@@ -58,7 +58,7 @@ with(sl, plot(year_AD, sea_level_m))
 $$y_i = \alpha + \beta x_i + \epsilon_i$$
 where $\alpha$ is the intercept, $\beta$ the slope, and $i=1, \ldots, N$ represents each of the $N$ observations
 
-- Usually we make the additional assumption that $\epsilon_i \sim N(0, \sigma^2)$ where $\sigma^2$ is the residual standard deviation
+- Usually we make the additional assumption that $\epsilon_i \sim N(0, \sigma^2)$ where $\sigma$ is the residual standard deviation
 
 - Writing this in probability distributions: 
 $$y_i|x_i, \alpha, \beta, \sigma \sim N(\alpha + \beta x_i, \sigma^2)$$. 
@@ -117,10 +117,10 @@ predict(my_model, newdata = data.frame(x = 2050))
 
 ## Residual plot
 
-- Common to plot a histogram of the residuals, and a scatter plot of the residuals vs the fits
+- Common to creata QQ-plot of the residuals, and a scatter plot of the residuals vs the fits
 ```{r, fig.height = 4}
 par(mfrow=c(1, 2))
-hist(my_model$residuals)
+qqnorm(my_model$residuals); qqline(my_model$residuals)
 plot(my_model$fitted.values, my_model$residuals)
 ```
 
@@ -257,7 +257,7 @@ glm(cbind(y, n) ~ x, family = binomial(link = logit))
 
 ## Further details about the fit
 
-- The interpretation of the $\hat{\beta}$ value (the coefficient of $x$) is in terms of _log odds_. A unit increase in $x$ gives a $\exp(\hat{\beta}) \approx 1.06$ times increase in the probability of a whitefly surviving
+- The interpretation of the $\hat{\beta}$ value (the coefficient of $x$) is in terms of _log odds_. A unit increase in $x$ gives a $\exp(\hat{\beta}) \approx 1.06$ times increase in the probability of a whitefly dying
 - You'll see amongst the output something called the _deviance_. This is minus twice the log-likelihood
 - It's a common measure used to compare models as the deviance for a linear regression model is just the mean square error
 - Next to it you'll see the _Akaike Information Criterion_ or AIC value, which penalises the deviance by adding on twice the number of parameters (i.e. a measure of the complexity of the model)
@@ -266,7 +266,7 @@ glm(cbind(y, n) ~ x, family = binomial(link = logit))
 ## Other glms
 
 - Another common glm is the Poisson, useful for count data
-- For example, suppose we treated the number of whitefly who survived as a count, and temporarily ignored the $n$ values
+- For example, suppose we treated the number of whitefly who died as a count, and temporarily ignored the $n$ values
 - We could fit:
 ```{r}
 glm(y ~ x, family = poisson(link = log))
