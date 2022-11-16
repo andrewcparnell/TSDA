@@ -401,11 +401,11 @@ prostate2 = read.table('http://statweb.stanford.edu/~tibs/ElemStatLearn/datasets
 str(prostate2)
 
 # 7.2 If you're dealing with people who only use R often safer to save directly as R format
-save(prostate, file = 'my_prostate_file.rda')
-save(prostate, file = 'path/to/my_prostate_file.rda')
+saveRDS(prostate, file = 'my_prostate_file.rds')
+saveRDS(prostate, file = 'path/to/my_prostate_file.rds')
 
 # 7.3 Load it back in
-load('path/to/my_prostate_file.rda')
+prostate = readRDS('my_prostate_file.rds')
 
 # 7.4 To save plots, use e.g. the pdf or jpeg function, and follow with dev.off()
 pdf(file = 'my_plot.pdf', width = 8, height = 6)
