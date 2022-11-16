@@ -33,10 +33,10 @@ Please note that the course will be recorded so please turn off video if you do 
 10:45-11:45 | Moving averages and ARMA [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_2/class_2_ARMA.pdf)
 11:45-12:00 | Break 
 12:00-13:00 | Integrated models and ARIMA [(slides)](https://andrewcparnell.github.io/TSDA/slides/day_2/class_3_ARIMA.pdf)
-13:00-15:00 | Lunch
-15:00-15:45 | Tutor-guided practical: the `forecast` package in R [(code)](https://andrewcparnell.github.io/TSDA/practicals/tutor_2_forecast.R)
-15:45-16:00 | Coffee break
-16:00-17:00 | Self-guided practical: Fitting ARIMA models with `forecast` [(worksheet)](https://andrewcparnell.github.io/TSDA/practicals/prac_2_ARIMA.pdf)
+13:00-14:00 | Lunch
+14:00-14:45 | Tutor-guided practical: the `forecast` package in R [(code)](https://andrewcparnell.github.io/TSDA/practicals/tutor_2_forecast.R)
+14:45-15:00 | Coffee break
+15:00-17:00 | Self-guided practical: Fitting ARIMA models with `forecast` [(worksheet)](https://andrewcparnell.github.io/TSDA/practicals/prac_2_ARIMA.pdf)
 
 ## Day 3
 
