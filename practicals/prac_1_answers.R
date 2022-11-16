@@ -81,7 +81,7 @@ AIC(mod_3) # Much worse than mod_2
 
 # 1. Load in the horseshoe.csv data set from the data directory and familiarise yourself with the data structure from the data_description.txt file
 
-horseshoe = read.csv('horseshoe.csv')
+horseshoe = read.csv('data/horseshoe.csv')
 
 # 2. Turn the color and spine variables into factors with their proper names
 horseshoe$color = factor(horseshoe$color, labels = c('light medium', 'medium', 'dark medium', 'dark'))
@@ -117,7 +117,7 @@ summary(mod_5) # AIC a bit worse 203.97
 # 1. This time fit a Poisson GLM to the horseshoe data, using the original number of satellites rather than the binary version you fitted previously. Again use width as the sole covariate, and again plot the fitted values
 
 mod_6 = glm(satell ~ width, family = poisson(link = 'log'), data = horseshoe)
-summary(mod_6) # Width clearly important, AIC 827.18
+summary(mod_6) # Width clearly important, AIC 927.18
 
 plot(horseshoe$width, horseshoe$satell)
 points(horseshoe$width, mod_6$fitted.values, col = 'red') # Non-linear increasing relationship with width
