@@ -257,7 +257,7 @@ glm(cbind(y, n) ~ x, family = binomial(link = logit))
 
 ## Further details about the fit
 
-- The interpretation of the $\hat{\beta}$ value (the coefficient of $x$) is in terms of _log odds_. A unit increase in $x$ gives a $\exp(\hat{\beta}) \approx 1.06$ times increase in the probability of a whitefly dying
+- The interpretation of the $\hat{\beta}$ value (the coefficient of $x$) is in terms of _log odds_. A unit increase in $x$ gives a $\exp(\hat{\beta}) \approx 1.06$ times increase in the probability of a whitefly surviving
 - You'll see amongst the output something called the _deviance_. This is minus twice the log-likelihood
 - It's a common measure used to compare models as the deviance for a linear regression model is just the mean square error
 - Next to it you'll see the _Akaike Information Criterion_ or AIC value, which penalises the deviance by adding on twice the number of parameters (i.e. a measure of the complexity of the model)
@@ -266,7 +266,7 @@ glm(cbind(y, n) ~ x, family = binomial(link = logit))
 ## Other glms
 
 - Another common glm is the Poisson, useful for count data
-- For example, suppose we treated the number of whitefly who died as a count, and temporarily ignored the $n$ values
+- For example, suppose we treated the number of whitefly who survived as a count, and temporarily ignored the $n$ values
 - We could fit:
 ```{r}
 glm(y ~ x, family = poisson(link = log))
