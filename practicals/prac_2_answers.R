@@ -27,7 +27,7 @@ with(airquality2, plot(Date, BoxCox(Ozone, lambda = lambda), type = 'l')) # Look
 
 # 4. Hopefully you noticed that there are lots of missing values. If you try an ACF plot here using the standard `acf` function it will fail, but if you use the `forecast` functions `Acf` and `Pacf` it will work. Create and interpret the ACF and PACF plots. (You could also try running them on the transformed data using the function `BoxCox`)
 Acf(airquality2$Ozone)
-Pacf(airquality2$Ozone) # Sudden drop off at lag ~ 3
+Pacf(airquality2$Ozone) # Sudden drop off at lag ~ 1
 
 Acf(BoxCox(airquality2$Ozone, lambda = lambda))
 Pacf(BoxCox(airquality2$Ozone, lambda = lambda)) # Drop off at lag 1

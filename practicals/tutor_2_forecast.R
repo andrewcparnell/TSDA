@@ -3,7 +3,7 @@
 #---- First section is on formatting datasets which involve dates
 
 # R generally does not handle dates and times well...
-# We'll use an R package call lubricate
+# We'll use an R package call lubridate
 
 install.packages("lubridate")
 library(lubridate)
@@ -182,8 +182,8 @@ ndiffs(tide$sea_level_m) #recommendation for differences
 arimaorder(model1) #return order (p,d,q,P,D,Q and m)
 
 # ------------- Forecasting ahead
-tide_model<-Arima(tide$sea_level_m, order=c(0,1,1)) # best bic model
-forecast(tide_model, h=10) # Why are all the forecasts the same?
+tide_model<-Arima(tide$sea_level_m, order=c(0,1,1), include.drift = TRUE) # best bic model
+forecast(tide_model, h=10)
 plot(forecast(tide_model, h=10))
 
 # Forecast a linear model
@@ -233,8 +233,8 @@ forecast(fires.fit, h = 3)
 fit <- stl(CO2$CO2_ppm, s.window="periodic") # not seasonal
 
 data("nottem")
-fit <- stl(nottem, s.window="periodic")
-lines(trendcycle(fit),col="red")
+fit <- stl(nottem, s.window= "periodic")
+# lines(trendcycle(fit),col="red") - doesn't do anythign?
 autoplot(cbind(
   Data = nottem,
   Seasonal = seasonal(fit),

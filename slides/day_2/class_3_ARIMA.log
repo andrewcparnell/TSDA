@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.4.19)  14 NOV 2022 10:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.4.19)  17 NOV 2022 15:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -800,6 +800,10 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\newline' on input line 154.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\begingroup' on input line 154.
 
 
@@ -973,10 +977,6 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\Hy@tempa' on input line 154.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\newline' on input line 154.
 
 (/usr/local/texlive/2022/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2022-02-07 L3 backend support: PDF output (pdfTeX)
@@ -1232,7 +1232,7 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <8> not available
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <6> not available
 (Font)              Font shape `T1/lmss/m/sl' tried instead on input line 158.
 
-Overfull \vbox (36.19589pt too high) detected at line 158
+Overfull \vbox (38.93338pt too high) detected at line 158
  []
 
 [1
@@ -1394,22 +1394,40 @@ Overfull \vbox (7.27496pt too high) detected at line 537
 \openout4 = `class_3_ARIMA.vrb'.
 
 (./class_3_ARIMA.vrb
-<class_3_ARIMA_files/figure-beamer/unnamed-chunk-9-1.pdf, id=199, 660.4675pt x 
-290.08376pt>
+<class_3_ARIMA_files/figure-beamer/unnamed-chunk-9-1.pdf, id=199, 689.57625pt x
+ 326.21875pt>
 File: class_3_ARIMA_files/figure-beamer/unnamed-chunk-9-1.pdf Graphic file (typ
 e pdf)
 <use class_3_ARIMA_files/figure-beamer/unnamed-chunk-9-1.pdf>
 Package pdftex.def Info: class_3_ARIMA_files/figure-beamer/unnamed-chunk-9-1.pd
-f  used on input line 9.
-(pdftex.def)             Requested size: 398.34952pt x 174.95898pt.
-) [21
+f  used on input line 11.
+(pdftex.def)             Requested size: 398.34462pt x 188.4454pt.
+)
+Overfull \vbox (19.08168pt too high) detected at line 550
+ []
+
+[21
 
  <./class_3_ARIMA_files/figure-beamer/unnamed-chunk-9-1.pdf>]
 \openout4 = `class_3_ARIMA.vrb'.
 
-(./class_3_ARIMA.vrb) [22
+(./class_3_ARIMA.vrb
+<class_3_ARIMA_files/figure-beamer/unnamed-chunk-10-1.pdf, id=214, 660.4675pt x
+ 290.08376pt>
+File: class_3_ARIMA_files/figure-beamer/unnamed-chunk-10-1.pdf Graphic file (ty
+pe pdf)
+<use class_3_ARIMA_files/figure-beamer/unnamed-chunk-10-1.pdf>
+Package pdftex.def Info: class_3_ARIMA_files/figure-beamer/unnamed-chunk-10-1.p
+df  used on input line 9.
+(pdftex.def)             Requested size: 398.34952pt x 174.95898pt.
+) [22
 
-] [23
+ <./class_3_ARIMA_files/figure-beamer/unnamed-chunk-10-1.pdf>]
+\openout4 = `class_3_ARIMA.vrb'.
+
+(./class_3_ARIMA.vrb) [23
+
+] [24
 
 ]
 \tf@nav=\write6
@@ -1423,13 +1441,13 @@ f  used on input line 9.
 
 (./class_3_ARIMA.aux) ) 
 Here is how much of TeX's memory you used:
- 25129 strings out of 478268
- 486752 string characters out of 5846347
+ 25143 strings out of 478268
+ 487263 string characters out of 5846347
  764092 words of memory out of 5000000
- 42580 multiletter control sequences out of 15000+600000
+ 42588 multiletter control sequences out of 15000+600000
  549175 words of font info for 144 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 128i,11n,122p,1010b,670s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 128i,11n,122p,1010b,672s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/lm/l
 m-ec.enc}{/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/us
 r/local/texlive/2022/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/te
@@ -1447,10 +1465,10 @@ onts/type1/public/lm/lmsso12.pfb></usr/local/texlive/2022/texmf-dist/fonts/type
 m/lmsy10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/lm/lmsy8.pf
 b></usr/local/texlive/2022/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/lo
 cal/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on class_3_ARIMA.pdf (23 pages, 282564 bytes).
+Output written on class_3_ARIMA.pdf (24 pages, 288055 bytes).
 PDF statistics:
- 314 PDF objects out of 1000 (max. 8388607)
- 232 compressed objects within 3 object streams
- 69 named destinations out of 1000 (max. 500000)
- 47190 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 329 PDF objects out of 1000 (max. 8388607)
+ 243 compressed objects within 3 object streams
+ 72 named destinations out of 1000 (max. 500000)
+ 47195 words of extra memory for PDF output out of 51595 (max. 10000000)
 

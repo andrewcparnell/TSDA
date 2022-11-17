@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.4.19)  14 NOV 2022 10:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.4.19)  17 NOV 2022 15:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -800,6 +800,10 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\newline' on input line 154.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\begingroup' on input line 154.
 
 
@@ -973,10 +977,6 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\Hy@tempa' on input line 154.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\newline' on input line 154.
 
 (/usr/local/texlive/2022/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2022-02-07 L3 backend support: PDF output (pdfTeX)
@@ -1232,7 +1232,7 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <8> not available
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <6> not available
 (Font)              Font shape `T1/lmss/m/sl' tried instead on input line 158.
 
-Overfull \vbox (36.19589pt too high) detected at line 158
+Overfull \vbox (38.93338pt too high) detected at line 158
  []
 
 [1
@@ -1405,22 +1405,40 @@ f  used on input line 17.
 \openout4 = `class_2_ARMA.vrb'.
 
 (./class_2_ARMA.vrb
-<class_2_ARMA_files/figure-beamer/unnamed-chunk-15-1.pdf, id=233, 660.4675pt x 
-290.08376pt>
+<class_2_ARMA_files/figure-beamer/unnamed-chunk-15-1.pdf, id=233, 689.57625pt x
+ 326.21875pt>
 File: class_2_ARMA_files/figure-beamer/unnamed-chunk-15-1.pdf Graphic file (typ
 e pdf)
 <use class_2_ARMA_files/figure-beamer/unnamed-chunk-15-1.pdf>
 Package pdftex.def Info: class_2_ARMA_files/figure-beamer/unnamed-chunk-15-1.pd
+f  used on input line 11.
+(pdftex.def)             Requested size: 398.34462pt x 188.4454pt.
+)
+Overfull \vbox (19.08168pt too high) detected at line 655
+ []
+
+[25
+
+ <./class_2_ARMA_files/figure-beamer/unnamed-chunk-15-1.pdf>]
+\openout4 = `class_2_ARMA.vrb'.
+
+(./class_2_ARMA.vrb
+<class_2_ARMA_files/figure-beamer/unnamed-chunk-16-1.pdf, id=249, 660.4675pt x 
+290.08376pt>
+File: class_2_ARMA_files/figure-beamer/unnamed-chunk-16-1.pdf Graphic file (typ
+e pdf)
+<use class_2_ARMA_files/figure-beamer/unnamed-chunk-16-1.pdf>
+Package pdftex.def Info: class_2_ARMA_files/figure-beamer/unnamed-chunk-16-1.pd
 f  used on input line 9.
 (pdftex.def)             Requested size: 398.34952pt x 174.95898pt.
-) [25
+) [26
 
- <./class_2_ARMA_files/figure-beamer/unnamed-chunk-15-1.pdf>] [26
+ <./class_2_ARMA_files/figure-beamer/unnamed-chunk-16-1.pdf>] [27
 
 ]
 \openout4 = `class_2_ARMA.vrb'.
 
-(./class_2_ARMA.vrb) [27
+(./class_2_ARMA.vrb) [28
 
 ]
 \tf@nav=\write6
@@ -1434,13 +1452,13 @@ f  used on input line 9.
 
 (./class_2_ARMA.aux) ) 
 Here is how much of TeX's memory you used:
- 25018 strings out of 478268
- 484861 string characters out of 5846347
+ 25032 strings out of 478268
+ 485365 string characters out of 5846347
  763053 words of memory out of 5000000
- 42502 multiletter control sequences out of 15000+600000
+ 42510 multiletter control sequences out of 15000+600000
  511587 words of font info for 92 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 128i,11n,122p,1009b,670s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 128i,11n,122p,1009b,672s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/lm/lm
 -mathex.enc}{/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/
 usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/local/tex
@@ -1459,10 +1477,10 @@ lmsy8.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/lm/lmtk10.pfb>
 </usr/local/texlive/2022/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/loca
 l/texlive/2022/texmf-dist/fonts/type1/public/lm/lmtti10.pfb></usr/local/texlive
 /2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on class_2_ARMA.pdf (27 pages, 310810 bytes).
+Output written on class_2_ARMA.pdf (28 pages, 316200 bytes).
 PDF statistics:
- 356 PDF objects out of 1000 (max. 8388607)
- 265 compressed objects within 3 object streams
- 81 named destinations out of 1000 (max. 500000)
- 24667 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 371 PDF objects out of 1000 (max. 8388607)
+ 276 compressed objects within 3 object streams
+ 84 named destinations out of 1000 (max. 500000)
+ 24672 words of extra memory for PDF output out of 24883 (max. 10000000)
 

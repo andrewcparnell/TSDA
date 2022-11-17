@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.4.19)  14 NOV 2022 10:47
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.4.19)  17 NOV 2022 15:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1258,44 +1258,62 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <7> not available
 ] [4
 
 ]
-<class_1_AR_files/figure-beamer/unnamed-chunk-1-1.pdf, id=50, 687.56876pt x 285
-.065pt>
+<class_1_AR_files/figure-beamer/unnamed-chunk-1-1.pdf, id=50, 689.57625pt x 288
+.07625pt>
 File: class_1_AR_files/figure-beamer/unnamed-chunk-1-1.pdf Graphic file (type p
 df)
 <use class_1_AR_files/figure-beamer/unnamed-chunk-1-1.pdf>
 Package pdftex.def Info: class_1_AR_files/figure-beamer/unnamed-chunk-1-1.pdf  
 used on input line 216.
-(pdftex.def)             Requested size: 398.33902pt x 165.15077pt.
+(pdftex.def)             Requested size: 398.34462pt x 166.41179pt.
 [5
 
  <./class_1_AR_files/figure-beamer/unnamed-chunk-1-1.pdf>]
 \openout4 = `class_1_AR.vrb'.
 
-(./class_1_AR.vrb) [6
+(./class_1_AR.vrb
+LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 
+7.
+(/usr/local/texlive/2022/texmf-dist/tex/latex/lm/ts1lmtt.fd
+File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+<class_1_AR_files/figure-beamer/unnamed-chunk-2-1.pdf, id=64, 689.57625pt x 288
+.07625pt>
+File: class_1_AR_files/figure-beamer/unnamed-chunk-2-1.pdf Graphic file (type p
+df)
+<use class_1_AR_files/figure-beamer/unnamed-chunk-2-1.pdf>
+Package pdftex.def Info: class_1_AR_files/figure-beamer/unnamed-chunk-2-1.pdf  
+used on input line 11.
+(pdftex.def)             Requested size: 398.34462pt x 166.41179pt.
+)
+Overfull \vbox (17.44807pt too high) detected at line 235
+ []
 
-]
-<class_1_AR_files/figure-beamer/unnamed-chunk-3-1.pdf, id=70, 687.56876pt x 285
+[6
+
+ <./class_1_AR_files/figure-beamer/unnamed-chunk-2-1.pdf>]
+<class_1_AR_files/figure-beamer/unnamed-chunk-3-1.pdf, id=79, 687.56876pt x 285
 .065pt>
 File: class_1_AR_files/figure-beamer/unnamed-chunk-3-1.pdf Graphic file (type p
 df)
 <use class_1_AR_files/figure-beamer/unnamed-chunk-3-1.pdf>
 Package pdftex.def Info: class_1_AR_files/figure-beamer/unnamed-chunk-3-1.pdf  
-used on input line 242.
+used on input line 240.
 (pdftex.def)             Requested size: 398.33902pt x 165.15077pt.
 [7
 
  <./class_1_AR_files/figure-beamer/unnamed-chunk-3-1.pdf>] [8
 
 ]
-<BrownianMotion.png, id=91, 256.96pt x 256.96pt>
+<BrownianMotion.png, id=103, 256.96pt x 256.96pt>
 File: BrownianMotion.png Graphic file (type png)
 <use BrownianMotion.png>
-Package pdftex.def Info: BrownianMotion.png  used on input line 274.
+Package pdftex.def Info: BrownianMotion.png  used on input line 276.
 (pdftex.def)             Requested size: 128.03662pt x 128.03662pt.
-<LevyFlight.png, id=93, 365.365pt x 355.3275pt>
+<LevyFlight.png, id=105, 365.365pt x 355.3275pt>
 File: LevyFlight.png Graphic file (type png)
 <use LevyFlight.png>
-Package pdftex.def Info: LevyFlight.png  used on input line 274.
+Package pdftex.def Info: LevyFlight.png  used on input line 276.
 (pdftex.def)             Requested size: 128.03577pt x 124.5183pt.
 [9
 
@@ -1305,7 +1323,7 @@ Package pdftex.def Info: LevyFlight.png  used on input line 274.
 \openout4 = `class_1_AR.vrb'.
 
 (./class_1_AR.vrb
-<class_1_AR_files/figure-beamer/unnamed-chunk-4-1.pdf, id=108, 689.57625pt x 32
+<class_1_AR_files/figure-beamer/unnamed-chunk-4-1.pdf, id=120, 689.57625pt x 32
 6.21875pt>
 File: class_1_AR_files/figure-beamer/unnamed-chunk-4-1.pdf Graphic file (type p
 df)
@@ -1314,7 +1332,7 @@ Package pdftex.def Info: class_1_AR_files/figure-beamer/unnamed-chunk-4-1.pdf
 used on input line 15.
 (pdftex.def)             Requested size: 398.34462pt x 188.4454pt.
 )
-Overfull \vbox (34.81082pt too high) detected at line 315
+Overfull \vbox (34.81082pt too high) detected at line 317
  []
 
 [11
@@ -1323,12 +1341,7 @@ Overfull \vbox (34.81082pt too high) detected at line 315
 \openout4 = `class_1_AR.vrb'.
 
 (./class_1_AR.vrb
-LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 
-11.
-(/usr/local/texlive/2022/texmf-dist/tex/latex/lm/ts1lmtt.fd
-File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-<class_1_AR_files/figure-beamer/unnamed-chunk-5-1.pdf, id=123, 689.57625pt x 25
+<class_1_AR_files/figure-beamer/unnamed-chunk-5-1.pdf, id=135, 689.57625pt x 25
 3.94875pt>
 File: class_1_AR_files/figure-beamer/unnamed-chunk-5-1.pdf Graphic file (type p
 df)
@@ -1337,7 +1350,7 @@ Package pdftex.def Info: class_1_AR_files/figure-beamer/unnamed-chunk-5-1.pdf
 used on input line 16.
 (pdftex.def)             Requested size: 398.34462pt x 146.6975pt.
 )
-Overfull \vbox (6.66292pt too high) detected at line 339
+Overfull \vbox (6.66292pt too high) detected at line 341
  []
 
 [12
@@ -1348,9 +1361,9 @@ Overfull \vbox (6.66292pt too high) detected at line 339
 
 ]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 386.
+(Font)              <5> on input line 388.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <5> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 386.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 388.
 [15
 
 ]
@@ -1365,7 +1378,7 @@ LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
 \openout4 = `class_1_AR.vrb'.
 
 (./class_1_AR.vrb
-<class_1_AR_files/figure-beamer/unnamed-chunk-7-1.pdf, id=170, 689.57625pt x 25
+<class_1_AR_files/figure-beamer/unnamed-chunk-7-1.pdf, id=178, 689.57625pt x 25
 3.94875pt>
 File: class_1_AR_files/figure-beamer/unnamed-chunk-7-1.pdf Graphic file (type p
 df)
@@ -1383,7 +1396,7 @@ used on input line 17.
 \openout4 = `class_1_AR.vrb'.
 
 (./class_1_AR.vrb
-<class_1_AR_files/figure-beamer/unnamed-chunk-8-1.pdf, id=200, 689.57625pt x 25
+<class_1_AR_files/figure-beamer/unnamed-chunk-8-1.pdf, id=208, 689.57625pt x 25
 3.94875pt>
 File: class_1_AR_files/figure-beamer/unnamed-chunk-8-1.pdf Graphic file (type p
 df)
@@ -1401,7 +1414,7 @@ used on input line 17.
 (./class_1_AR.vrb
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 15.
-<class_1_AR_files/figure-beamer/unnamed-chunk-9-1.pdf, id=221, 687.56876pt x 14
+<class_1_AR_files/figure-beamer/unnamed-chunk-9-1.pdf, id=229, 687.56876pt x 14
 2.5325pt>
 File: class_1_AR_files/figure-beamer/unnamed-chunk-9-1.pdf Graphic file (type p
 df)
@@ -1410,19 +1423,19 @@ Package pdftex.def Info: class_1_AR_files/figure-beamer/unnamed-chunk-9-1.pdf
 used on input line 23.
 (pdftex.def)             Requested size: 398.33902pt x 82.57538pt.
 )
-Overfull \vbox (27.5408pt too high) detected at line 539
+Overfull \vbox (27.5408pt too high) detected at line 541
  []
 
 [22
 
  <./class_1_AR_files/figure-beamer/unnamed-chunk-9-1.pdf>]
-<class_1_AR_files/figure-beamer/unnamed-chunk-10-1.pdf, id=235, 689.57625pt x 3
+<class_1_AR_files/figure-beamer/unnamed-chunk-10-1.pdf, id=243, 689.57625pt x 3
 26.21875pt>
 File: class_1_AR_files/figure-beamer/unnamed-chunk-10-1.pdf Graphic file (type 
 pdf)
 <use class_1_AR_files/figure-beamer/unnamed-chunk-10-1.pdf>
 Package pdftex.def Info: class_1_AR_files/figure-beamer/unnamed-chunk-10-1.pdf 
- used on input line 544.
+ used on input line 546.
 (pdftex.def)             Requested size: 398.34462pt x 188.4454pt.
 [23
 
@@ -1451,18 +1464,18 @@ Package pdftex.def Info: class_1_AR_files/figure-beamer/unnamed-chunk-10-1.pdf
 
 (./class_1_AR.aux) ) 
 Here is how much of TeX's memory you used:
- 25198 strings out of 478268
- 488267 string characters out of 5846347
+ 25205 strings out of 478268
+ 488655 string characters out of 5846347
  763233 words of memory out of 5000000
- 42633 multiletter control sequences out of 15000+600000
+ 42639 multiletter control sequences out of 15000+600000
  547545 words of font info for 148 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  128i,11n,122p,1007b,670s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/lm/lm-r
 m.enc}{/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{/us
 r/local/texlive/2022/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/texliv
-e/2022/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/2022/tex
-mf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2022/texmf-dist/fo
+e/2022/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2022/tex
+mf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/2022/texmf-dist/fo
 nts/enc/dvips/lm/lm-ts1.enc}</usr/local/texlive/2022/texmf-dist/fonts/type1/pub
 lic/lm/lmex10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/lm/lmm
 i10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/lm/lmmi12.pfb></
@@ -1476,10 +1489,10 @@ y10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></u
 sr/local/texlive/2022/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></usr/local/t
 exlive/2022/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/202
 2/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on class_1_AR.pdf (28 pages, 329099 bytes).
+Output written on class_1_AR.pdf (28 pages, 339475 bytes).
 PDF statistics:
- 378 PDF objects out of 1000 (max. 8388607)
- 278 compressed objects within 3 object streams
+ 386 PDF objects out of 1000 (max. 8388607)
+ 283 compressed objects within 3 object streams
  84 named destinations out of 1000 (max. 500000)
- 45162 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 45167 words of extra memory for PDF output out of 51595 (max. 10000000)
 

@@ -3,13 +3,15 @@ title: 'Class 2: Moving averages and ARMA'
 author: Andrew Parnell \newline \texttt{andrew.parnell@mu.ie}   \newline \vspace{1cm}
   \newline \includegraphics[width=3cm]{../maynooth_uni_logo.jpg}
   \newline \vspace{1cm}
-  https://andrewcparnell.github.io/TSDA/
   \newline PRESS RECORD 
+  https://andrewcparnell.github.io/TSDA/
 output:
   beamer_presentation:
     includes:
       in_header: ../header.tex
 classoption: "aspectratio=169"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -256,6 +258,14 @@ Arima(wheat$wheat, order = c(2, 0, 1))$aic
 my_model_ARMA21 = Arima(wheat$wheat, order = c(2, 0, 1))
 qqnorm(my_model_ARMA21$residuals)
 qqline(my_model_ARMA21$residuals)
+```
+
+## Check residuals' ACF and PACF
+
+```{r, fig.height = 5}
+par(mfrow=c(1,2))
+acf(my_model_ARMA21$residuals)
+pacf(my_model_ARMA21$residuals)
 ```
 
 ## Forecast into the future

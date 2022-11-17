@@ -1,5 +1,5 @@
 ---
-title: 'Class 1: Auto-regressive models and random walks'
+title: 'Class 1: Random walks and auto-regressive models'
 author: Andrew Parnell \newline \texttt{andrew.parnell@mu.ie}   \newline \vspace{1cm}
   \newline \includegraphics[width=3cm]{../maynooth_uni_logo.jpg}
   \newline \vspace{1cm}
@@ -10,6 +10,8 @@ output:
     includes:
       in_header: ../header.tex
 classoption: "aspectratio=169"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -22,10 +24,10 @@ lapply(pkgs, library, character.only = TRUE)
 
 ## Learning outcomes
 
-- Understand the key parts that make up a stationary time series
-- Know what an Autocorrelation (ACF) and Partial Autocorrelation (PACF) function is
 - Understand how a random walk process is generated
+- Know what an Autocorrelation (ACF) and Partial Autocorrelation (PACF) function is
 - Understand the AR(p) process
+- Understand the key parts that make up a stationary time series
 
 ## The most important slide in the course
 
@@ -53,19 +55,18 @@ $$y_t = \mbox{trend}_t + \mbox{seasonality}_t + \mbox{error}_t$$
 
 ```{r, echo=FALSE}
 set.seed(123)
-y <- cumsum(sample(c(-1, 1), size=500, replace=TRUE))
-plot(y, type = 'l')
+y <- cumsum(rnorm(1000))
+plot(y[1:500], type = 'l')
 ```
 
 ## Generating the series
 
 ```{r, echo=TRUE}
 set.seed(123)
-y <- cumsum(sample(c(-1, 1), size=1000, replace=TRUE))
+y <- cumsum(rnorm(1000))
+plot(y[1:500], type = 'l')
 ```
 
-- The `sample` command just produces a set of 1000 values either -1 or 1
-- `cumsum` just cumulatively adds them up
 - This is a _random walk_ series
 
 ##  And what happens when we continue the series?
@@ -76,11 +77,14 @@ plot(y, type = 'l')
 
 ## Random walk applications
 
-The steps don't have to be the same size.
+The steps don't have to be normally distributed.
 
-- A step size with a Gaussian distribution is useful for modelling stock markets 
+- Random walks are commonly used for forecasting series like stock markets
 - If the step size probability distribution is heavy tailed (e.g. $t$ distributed), we have a _Levy Process_
 - They also don't have to be in 1 dimension. We can simulate random walks in 2, 3, ... dimensions by adding multivariate steps
+- You can fit this model by calculating the likelihood from:
+
+$$y_t \sim N(y_{t-1}, \sigma^2)$$
 
 ## Levy flight vs Brownian motion in 2D
 
