@@ -149,12 +149,7 @@ as.Date(as.POSIXct(1*60*60*24, origin = "2017-06-27", tz = "GMT"))
 library(forecast)
 library(ggplot2) #  Not essential - will point out where this occurs
 
-# Dealing with outliers in a dataset
-CO2<-read.csv("data/CO2.csv")
-tsdisplay(CO2$CO2_ppm)
-# Replaces outliers and missing values using linear interpolation
-clean_CO2<-tsclean(CO2$CO2_ppm) 
-tsdisplay(clean_CO2)
+# Auto ARIMA modelling
 
 # "Best" ARIMA answer
 tide<-read.csv("data/tide_gauge.csv")
@@ -180,6 +175,14 @@ model1<-Arima(tide$sea_level_m, order = c(1,0,2), xreg = tide$year_AD)
 # Random functions
 ndiffs(tide$sea_level_m) #recommendation for differences
 arimaorder(model1) #return order (p,d,q,P,D,Q and m)
+
+# Aside - dealing with outliers in a dataset
+CO2<-read.csv("data/CO2.csv")
+tsdisplay(CO2$CO2_ppm)
+# Replaces outliers and missing values using linear interpolation
+clean_CO2<-tsclean(CO2$CO2_ppm) 
+tsdisplay(clean_CO2)
+
 
 # ------------- Forecasting ahead
 tide_model<-Arima(tide$sea_level_m, order=c(0,1,1), include.drift = TRUE) # best bic model
