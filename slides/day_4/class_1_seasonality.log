@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.4.19)  14 NOV 2022 10:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.4.19)  18 NOV 2022 16:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1414,32 +1414,32 @@ Overfull \hbox (16.4102pt too wide) in paragraph at lines 38--38
 
 
 Overfull \hbox (16.4102pt too wide) in paragraph at lines 38--38
-[]\T1/lmtt/m/n/10 ## alpha     -6.458   0.881  -8.155  -7.076  -6.457  -5.861  
--4.727 1.001  3000[] 
+[]\T1/lmtt/m/n/10 ## alpha     -6.465   0.859  -8.202  -7.014  -6.472  -5.875  
+-4.763 1.003   790[] 
  []
 
 
 Overfull \hbox (16.4102pt too wide) in paragraph at lines 38--38
-[]\T1/lmtt/m/n/10 ## beta       0.189   0.025   0.141   0.172   0.189   0.205  
- 0.238 1.002  1000[] 
+[]\T1/lmtt/m/n/10 ## beta       0.189   0.024   0.140   0.173   0.188   0.204  
+ 0.235 1.001  3000[] 
  []
 
 
 Overfull \hbox (16.4102pt too wide) in paragraph at lines 38--38
-[]\T1/lmtt/m/n/10 ## gamma      0.833   0.025   0.782   0.816   0.833   0.849  
- 0.882 1.002  1100[] 
+[]\T1/lmtt/m/n/10 ## gamma      0.833   0.024   0.785   0.816   0.833   0.849  
+ 0.882 1.001  3000[] 
  []
 
 
 Overfull \hbox (16.4102pt too wide) in paragraph at lines 38--38
-[]\T1/lmtt/m/n/10 ## sigma      0.600   0.024   0.555   0.584   0.599   0.616  
- 0.650 1.001  3000[] 
+[]\T1/lmtt/m/n/10 ## sigma      0.599   0.023   0.554   0.583   0.598   0.614  
+ 0.645 1.001  2800[] 
  []
 
 
 Overfull \hbox (16.4102pt too wide) in paragraph at lines 38--38
-[]\T1/lmtt/m/n/10 ## deviance 571.736   2.952 568.197 569.629 571.031 573.058 5
-79.316 1.001  3000[] 
+[]\T1/lmtt/m/n/10 ## deviance 571.580   2.810 568.152 569.520 570.870 573.004 5
+78.764 1.002  1800[] 
  []
 
 
@@ -1577,7 +1577,7 @@ pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></usr/
 local/texlive/2022/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texl
 ive/2022/texmf-dist/fonts/type1/public/lm/lmtt12.pfb></usr/local/texlive/2022/t
 exmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on class_1_seasonality.pdf (27 pages, 321207 bytes).
+Output written on class_1_seasonality.pdf (27 pages, 321213 bytes).
 PDF statistics:
  380 PDF objects out of 1000 (max. 8388607)
  280 compressed objects within 3 object streams

@@ -1,9 +1,9 @@
 ## Tutorial lab 3 - Walkthrough examples of time series analysis
 
 rm(list=ls())
-require(forecast)
-require(R2jags)
-require(rjags)
+library(forecast)
+library(R2jags)
+library(rjags)
 library(ggplot2)
 
 

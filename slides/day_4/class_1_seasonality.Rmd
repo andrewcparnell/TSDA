@@ -82,7 +82,7 @@ plot(forecast(s_model_1, h = 24))
 ## What is the time series model doing here?
 
 - This is just a regression model, so that:
-$$y_t = \beta_t \mbox{year}_t + \gamma_{1} \mbox{Jan}_t + \gamma_{2} \mbox{Feb}_t + \gamma_{3} \mbox{Mar}_t + \ldots + \gamma_{12} \mbox{Dec}_t + \epsilon_t$$
+$$y_t = \beta \mbox{year}_t + \gamma_{1} \mbox{Jan}_t + \gamma_{2} \mbox{Feb}_t + \gamma_{3} \mbox{Mar}_t + \ldots + \gamma_{12} \mbox{Dec}_t + \epsilon_t$$
 
 - You can do this using `lm` or using `forecast`'s special function for linear regression forecasting `tslm`
 

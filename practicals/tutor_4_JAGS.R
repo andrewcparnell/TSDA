@@ -25,16 +25,16 @@ library(R2jags)
 # alpha = mean parameter
 # eps_t = residual at time t
 # theta = MA parameters
-# phi = AR parameters
+# beta = AR parameters
 # sigma = residual standard deviation
 # d = number of first differences
 # p and q = number of autoregressive and moving average components respectively
 # We do the differencing outside the model so let z[t] = diff(y, differences = d)
 # Likelihood:
-# z[t] ~ N(alpha + phi[1] * z[t-1] + ... + phi[p] * z[y-p] + theta_1 ept_{t-1} + ... + theta_q eps_{t-q}, sigma^2)
+# z[t] ~ N(alpha + beta[1] * z[t-1] + ... + beta[p] * z[y-p] + theta_1 ept_{t-1} + ... + theta_q eps_{t-q}, sigma^2)
 # Priors
 # alpha ~ N(0,100)
-# phi ~ N(0,100) - need to be a bit careful with these if you want the process to remain stable
+# beta ~ N(0,100) - need to be a bit careful with these if you want the process to remain stable
 # theta ~ N(0,100)
 # sigma ~ unif(0,10)
 
@@ -48,14 +48,14 @@ T = 100
 sigma = 1
 alpha = 0
 set.seed(123)
-theta = runif(q)
-phi = sort(runif(p),decreasing=TRUE)
+theta = sort(runif(q),decreasing=TRUE)
+beta = sort(runif(p),decreasing=TRUE)
 y = rep(NA,T)
 y[1:q] = rnorm(q,0,sigma)
 eps = rep(NA,T)
 eps[1:q] = y[1:q] - alpha
 for(t in (q+1):T) {
-  ar_mean = sum( phi * y[(t-1):(t-p)] )
+  ar_mean = sum( beta * y[(t-1):(t-p)] )
   ma_mean = sum( theta * eps[(t-q):(t-1)] )
   y[t] = rnorm(1, mean = alpha + ar_mean + ma_mean, sd = sigma)
   eps[t] = y[t] - alpha - ma_mean - ar_mean
@@ -76,7 +76,7 @@ model
   for (t in (max(p,q)+1):T) {
     z[t] ~ dnorm(alpha + ar_mean[t] + ma_mean[t], sigma^-2)
     ma_mean[t] <- inprod(theta, eps[(t-q):(t-1)])
-    ar_mean[t] <- inprod(phi, z[(t-p):(t-1)])
+    ar_mean[t] <- inprod(beta, z[(t-p):(t-1)])
     eps[t] <- z[t] - alpha - ar_mean[t] - ma_mean[t]
   }
   # Priors
@@ -85,7 +85,7 @@ model
     theta[i] ~ dnorm(0, 10^-2)
   }
   for(i in 1:p) {
-    phi[i] ~ dnorm(0, 10^-2)
+    beta[i] ~ dnorm(0, 10^-2)
   }
   sigma ~ dunif(0.0,10.0)
 }
@@ -95,7 +95,7 @@ model
 model_data = list(T = T, z = y, q = 1, p = 1)
 
 # Choose the parameters to watch
-model_parameters =  c("alpha","theta","phi","sigma")
+model_parameters =  c("alpha","theta","beta","sigma")
 
 # Run the model
 model_run = jags(data = model_data,
@@ -110,7 +110,7 @@ model_run = jags(data = model_data,
 
 # Results and output of the simulated example,
 # to include convergence checking, output plots, interpretation etc
-print(model_run) # Parameters theta/phi/sigma should match the true value
+print(model_run) # Parameters theta/beta/sigma should match the true value
 plot(model_run)
 
 # Extracting the posterior samples:
@@ -131,12 +131,12 @@ plot(post_sigma, type="l")
 abline(h=median_sigma, col="blue", lwd=2)
 abline(h=sigma, col="red", lwd=2)
 
-# Can repeat this for all variables of interest, e.g. phi:
-post_phi = post[,'phi']
-median_phi = median(post_phi)
-plot(post_phi, type="l")
-abline(h=median_phi, col="blue", lwd=2)
-abline(h=phi, col="red", lwd=2)
+# Can repeat this for all variables of interest, e.g. beta:
+post_beta = post[,'beta']
+median_beta = median(post_beta)
+plot(post_beta, type="l")
+abline(h=median_beta, col="blue", lwd=2)
+abline(h=beta, col="red", lwd=2)
 
 # Can repeat this for all variables of interest, e.g. theta:
 post_theta = post[,'theta']
@@ -195,7 +195,7 @@ plot(real_data_run)
 post = real_data_run$BUGSoutput$sims.list
 alpha_mean = mean(post$alpha)
 theta_mean = apply(post$theta,2,'mean')
-phi_mean = apply(post$phi,2,'mean')
+beta_mean = apply(post$beta,2,'mean')
 
 # Create fitted values
 z = diff(hadcrut$Anomaly, differences = d)
@@ -203,7 +203,7 @@ eps_fit = z_fit = rep(NA,real_data$T) # Create holder
 eps_fit[1:real_data$q] = z[1:real_data$q] - alpha_mean
 z_fit[1:real_data$q] = alpha_mean
 for (t in (real_data$q+1):real_data$T) {
-  ar_mean = sum( phi_mean * z[(t-real_data$p):(t-1)] )
+  ar_mean = sum( beta_mean * z[(t-real_data$p):(t-1)] )
   ma_mean = sum( theta_mean * eps_fit[(t-real_data$q):(t-1)] )
   eps_fit[t] = z[t] - alpha_mean - ma_mean - ar_mean
   z_fit[t] = alpha_mean + ma_mean + ar_mean # No sigma term here - fitted value
@@ -379,7 +379,7 @@ abline(h=gamma_1, col="red", lwd=2)
 # Real example ------------------------------------------------------------
 
 # Run the ARCH(1) model on the ice core data set
-ice = read.csv('GISP2_20yr.csv') #ice = read.csv('https://raw.githubusercontent.com/andrewcparnell/tsme_course/master/data/GISP2_20yr.csv')
+ice = read.csv('data/GISP2_20yr.csv') #ice = read.csv('https://raw.githubusercontent.com/andrewcparnell/tsme_course/master/data/GISP2_20yr.csv')
 head(ice)
 dim(ice)
 
@@ -471,16 +471,16 @@ library(rstan)
 # alpha = mean parameter
 # eps_t = residual at time t
 # theta = MA parameters
-# phi = AR parameters
+# beta = AR parameters
 # sigma = residual standard deviation
 # d = number of first differences
 # p and q = number of autoregressive and moving average components respecrively
 # We do the differencing outside the model so let z[t] = diff(y, differnces = d)
 # Likelihood:
-# z[t] ~ N(alpha + phi[1] * z[t-1] + ... + phi[p] * z[y-p] + theta_1 ept_{t-1} + ... + theta_q eps_{t-q}, sigma^2)
+# z[t] ~ N(alpha + beta[1] * z[t-1] + ... + beta[p] * z[y-p] + theta_1 ept_{t-1} + ... + theta_q eps_{t-q}, sigma^2)
 # Priors
 # alpha ~ N(0,10)
-# phi ~ N(0,10) - need to be a bit careful with these if you want the process to remain stable
+# beta ~ N(0,10) - need to be a bit careful with these if you want the process to remain stable
 # theta ~ N(0,10)
 # sigma ~ cauchy(0,5)
 
@@ -494,14 +494,14 @@ T = 100
 sigma = 1
 alpha = 0
 set.seed(123)
-theta = runif(q)
-phi = sort(runif(p),decreasing=TRUE)
+theta = sort(runif(q),decreasing=TRUE)
+beta = sort(runif(p),decreasing=TRUE)
 y = rep(NA,T)
 y[1:q] = rnorm(q,0,sigma)
 eps = rep(NA,T)
 eps[1:q] = y[1:q] - alpha
 for(t in (q+1):T) {
-  ar_mean = sum( phi * y[(t-1):(t-p)] )
+  ar_mean = sum( beta * y[(t-1):(t-p)] )
   ma_mean = sum( theta * eps[(t-q):(t-1)] )
   y[t] = rnorm(1, mean = alpha + ar_mean + ma_mean, sd = sigma)
   eps[t] = y[t] - alpha - ma_mean - ar_mean
@@ -517,21 +517,21 @@ data {
 }
 parameters {
   real alpha; // mean coeff
-  real phi; // autoregression coeff
+  real beta; // autoregression coeff
   real theta; // moving avg coeff
   real<lower=0> sigma; // noise scale
 }
 model {
   vector[T] nu; // prediction for time t
   vector[T] err; // error for time t
-  nu[1] = alpha + phi * alpha; // assume err[0] == 0
+  nu[1] = alpha + beta * alpha; // assume err[0] == 0
   err[1] = y[1] - nu[1];
   for (t in 2:T) {
-  nu[t] = alpha + phi * y[t-1] + theta * err[t-1];
+  nu[t] = alpha + beta * y[t-1] + theta * err[t-1];
   err[t] = y[t] - nu[t];
 }
   alpha ~ normal(0, 10); // priors
-  phi ~ normal(0, 10);
+  beta ~ normal(0, 10);
   theta ~ normal(0, 10);
   sigma ~ cauchy(0, 5); // Happier with this than the uniform
   //err ~ normal(0, sigma); // likelihood
@@ -554,28 +554,28 @@ model_fit = stan(
 
 # Summary of model output:
 print(model_fit,
-      pars=c("alpha", "phi", "theta", "sigma", "lp__"), # The parameters we want to see
+      pars=c("alpha", "beta", "theta", "sigma", "lp__"), # The parameters we want to see
       probs=c(.1,.5,.9), # The credible interval wanted
       digits=2) # Number of decimal places to print
 
 # Note the r-hat values to indicate convergence
 
 # Plots of posterior densities:
-plot(model_fit, pars=c("alpha", "phi", "theta", "sigma", "lp__")) # The parameters we want to see
+plot(model_fit, pars=c("alpha", "beta", "theta", "sigma", "lp__")) # The parameters we want to see
 
 # Remove lp__:
-plot(model_fit, pars=c("alpha", "phi", "theta", "sigma")) # The parameters we want to see
+plot(model_fit, pars=c("alpha", "beta", "theta", "sigma")) # The parameters we want to see
 
 # Traceplots to see the full chain:
 rstan::traceplot(model_fit, pars = "alpha", inc_warmup = TRUE)
-rstan::traceplot(model_fit, pars = "phi", inc_warmup = TRUE)
+rstan::traceplot(model_fit, pars = "beta", inc_warmup = TRUE)
 rstan::traceplot(model_fit, pars = "theta", inc_warmup = TRUE)
 rstan::traceplot(model_fit, pars = "sigma", inc_warmup = TRUE)
 
 # Pairs function:
 # The “pairs”" plot can be used to get a sense of whether any sampling
 # difficulties are occurring in the tails or near the mode:
-pairs(model_fit, pars = c("alpha", "phi", "theta", "sigma"), las = 1)
+pairs(model_fit, pars = c("alpha", "beta", "theta", "sigma"), las = 1)
 # Note the marginal distribution along the diagonal
 
 # Each off-diagonal square represents a bivariate distribution of the draws
