@@ -165,7 +165,7 @@ par(mfrow=c(1,2))
 acf(hadcrut2)
 pacf(hadcrut2)
 par(mfrow=c(1,1))
-# Try ARIMA(3,1,3)?
+# Try ARIMA(2,1,2)?
 
 # Set up the data
 d = 1
