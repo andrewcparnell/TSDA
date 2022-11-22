@@ -72,14 +72,14 @@ model5 # AIC = -275.52
 
 # Comparing our model to an ARIMAX model
 auto.arima(hadcrut$Anomaly, trace = TRUE)  # AIC = -274.32
-auto.arima(hadcrut$Anomaly, xreg=hadcrut$Year)  #AIC = -272.03 
+auto.arima(hadcrut$Anomaly, xreg=hadcrut$Year)  #AIC = -273.61 
 
-# set auto.arima model as our model to use
-model_new =  Arima(hadcrut$Anomaly, order = c(2,1,1), include.drift = TRUE) 
-model_new #AIC = -274.32
+# set our ARIMA(3,1,2) model as our model to use (better than auto.arima)
+model_new =  Arima(hadcrut$Anomaly, order = c(3,1,2), include.drift = TRUE) 
+model_new #AIC = -275.52
 
 #6. Check the residuals
-residuals <- model_new$res 
+residuals <- model_new$residuals
 fit <- fitted(model_new)
 
 qqnorm(residuals)
@@ -121,18 +121,30 @@ lambda <- BoxCox.lambda(lynx$number)
 lambda
 
 # auto.arima(lynx$number) # see if our answer matches the packages suggestion
-auto.arima(lynx$number, lambda = lambda, trace = TRUE) #AIC = 408.93 
+auto.arima(ts(lynx$number, frequency = 10), lambda = lambda, trace = TRUE) #AIC = 408.93 
 
 # Ar fits am AR series based on AIC
-lynx.fit <- ar(BoxCox(lynx$number, lambda))
-plot(forecast(lynx.fit, h = 20, lambda = lambda))
+lynx.fit <- Arima(ts(lynx$number, frequency = 10), order = c(3, 0, 1), seasonal = c(2, 1, 0), lambda = lambda)
+plot(forecast(lynx.fit, h = 40, lambda = lambda))
 
 # model used in literature White Tong (1977)
 fit1 <- Arima(lynx$number, order = c(11,0,0), lambda = lambda) #Series is the original series
 fit1  #AIC = 394.57
 
 # Forecasting transformed data
-plot(forecast(fit1, h = 15)) 
+plot(forecast(fit1, h = 40)) 
+
+# Check residuals
+residuals <- lynx.fit$residuals
+fit <- fitted(lynx.fit)
+
+qqnorm(residuals)
+qqline(residuals) # Want points along line
+acf(residuals)  # Check residuals don't correlate with themselves
+plot(fit, residuals) # Want random scatter
+hist(residuals, breaks = 30) # Want normal distribution
+tsdiag(lynx.fit, gof.lag = 30) # Combines plots
+checkresiduals(model_new) # Combines plots
 
 # Cross Fold Validation and forecast from neural network models
 modelcv <- CVar(lynx$number, k = 5, lambda = lambda)  # Currently applies a neural network model

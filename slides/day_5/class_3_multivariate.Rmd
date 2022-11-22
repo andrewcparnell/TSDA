@@ -61,16 +61,14 @@ model
     y[t, ] ~ dmnorm(mu[t, ], Sigma.Inv)
     mu[t, 1:k] <- A + Phi %*% y[t-1,]
   }
-  Sigma.Inv ~ dwish(I, k+1)
   Sigma <- inverse(Sigma.Inv)  
 
   # Priors
+  Sigma.Inv ~ dwish(I, k+1)
   for(i in 1:k) {
     A[i] ~ dnorm(0, 20^-2)
-    Phi[i,i] ~ dunif(-1, 1)
-    for(j in (i+1):k) {
+    for(j in 1:k) {
       Phi[i,j] ~ dunif(-1,1)
-      Phi[j,i] ~ dunif(-1,1)
     }
   }
 }

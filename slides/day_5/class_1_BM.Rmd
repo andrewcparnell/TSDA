@@ -42,12 +42,11 @@ lapply(pkgs, library, character.only = TRUE)
 
 ## Some models for continuous time we have met
 
-We have already seen three methods which work for data recorded in continuous time:
+We have already seen two methods which work for data recorded in continuous time:
 
   1. Linear and logistic regression 
   2. Fourier Methods
-  3. Seasonal factor models
-  
+
 However for all of these it could be argued that they are not true time series models since they borrow predictive strength from both the future and the past
 
 ## Brownian motion
@@ -69,9 +68,9 @@ model
 {
   # Likelihood
   for (i in 2:T) {
-  y[i] ~ dnorm( alpha * (t[i] - t[i-1]) + y[i-1], 
-                sigma_rw[i]^-2 )
-  sigma_rw[i] <- sigma * sqrt(t[i] - t[i-1])
+    y[i] ~ dnorm( alpha * (t[i] - t[i-1]) + y[i-1], 
+                  sigma_rw[i]^-2 )
+    sigma_rw[i] <- sigma * sqrt(t[i] - t[i-1])
   }
   
   # Priors
@@ -179,7 +178,7 @@ model
 
   # Priors
   alpha ~ dnorm(0, 100^-2)
-  theta ~ dnorm(0, 10^-2)
+  theta ~ dunif(0, 1)
   sigma ~ dunif(0, 100)
 }
 '

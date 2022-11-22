@@ -56,12 +56,12 @@ model
   for (t in 1:T) {
     y[t] ~ dnorm(alpha_y + beta_y * x[t], sigma_y^-2)
   }
+
+  # Priors
   x[1] ~ dnorm(0, 100^-2)
   for (t in 2:T) {
     x[t] ~ dnorm(x[t-1], sigma_x^-2)
   }
-
-  # Priors
   sigma_y ~ dunif(0, 100)
   sigma_x ~ dunif(0, 100)
 }'
@@ -168,7 +168,6 @@ model
   alpha[1] ~ dnorm(0, 10^-2)
   alpha[2] ~ dnorm(0, 10^-2)
   t_1 ~ dunif(t_min, t_max)
-
   sigma ~ dunif(0, 100)
 }
 "
@@ -201,7 +200,6 @@ model
   beta[1] ~ dnorm(0, 10^-2)
   beta[2] ~ dnorm(0, 10^-2)
   t_1 ~ dunif(t_min, t_max)
-
   sigma ~ dunif(0, 100)
 }
 "
